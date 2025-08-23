@@ -1,0 +1,406 @@
+/* src/pages/HomePage/components/BachecaSection.css */
+
+.hero-bacheca {
+  background: transparent;
+  min-height: 50vh;
+  padding: 60px 20px;
+  position: relative;
+}
+
+.hero-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--light-cream);
+  text-align: center;
+  margin-bottom: 60px;
+  letter-spacing: -0.02em;
+}
+
+/* ===============================================
+   CAROSELLO ORIZZONTALE - NUOVO LAYOUT
+   =============================================== */
+
+/* Container principale del carosello */
+.carousel-container {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+  margin: 0 auto;
+  max-width: 100%;
+  
+  /* Nascondi scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* Card del carosello */
+.carousel-card {
+  flex: 0 0 auto;
+  width: 320px;
+  aspect-ratio: 0.7;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  cursor: pointer;
+  position: relative;
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* ===============================================
+   RESET TOTALE TRASPARENZA - MASSIMA PRIORITÀ
+   =============================================== */
+
+/* Card prodotto - RESET COMPLETO */
+.carousel-card,
+.carousel-card *,
+.carousel-card::before,
+.carousel-card::after,
+.carousel-card *::before,
+.carousel-card *::after {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* Container immagine - SPECIFICITÀ MASSIMA */
+.hero-bacheca .carousel-container .carousel-card .card-image-container,
+.carousel-card .card-image-container,
+.card-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: 0;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* Immagine del prodotto */
+.card-image {
+  width: 115%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+  opacity: 0.95;
+  background: none !important;
+  background-color: transparent !important;
+}
+
+/* Overlay che appare solo on hover */
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent !important;
+  padding: 20px;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+/* Hover effect - SOLO sull'overlay */
+.carousel-card:hover .card-overlay {
+  opacity: 1;
+  pointer-events: all;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    rgba(0, 0, 0, 0.6) 100%
+  ) !important;
+}
+
+/* Contenuto dell'overlay */
+.card-content {
+  width: 100%;
+  background: transparent !important;
+  position: relative;
+}
+
+/* Backdrop blur specifico per il testo - OPACITÀ CHIARA */
+.card-content::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px) brightness(1.1);
+  border-radius: 16px;
+  z-index: -1;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.card-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ff6b35;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* ===============================================
+   SMOOTH SCROLLING E TOUCH GESTURES
+   =============================================== */
+
+.carousel-container {
+  /* iOS momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  
+  /* Smooth scrolling per tutti i browser */
+  scroll-behavior: smooth;
+  
+  /* Impedisce il bounce su iOS */
+  overscroll-behavior-x: contain;
+  
+  /* Touch action ottimizzato */
+  touch-action: pan-x;
+}
+
+/* Effetto di "magnetismo" per lo snap */
+.carousel-card {
+  scroll-margin-left: 20px;
+}
+
+/* ===============================================
+   REGOLE ULTRA-SPECIFICHE ANTI-OVERRIDE
+   =============================================== */
+
+/* Reset su OGNI possibile elemento */
+.hero-bacheca .carousel-container .carousel-card,
+.hero-bacheca .carousel-container .carousel-card > *,
+.hero-bacheca .carousel-container .carousel-card .card-image-container,
+.hero-bacheca .carousel-container .carousel-card .card-image-container > *,
+body .hero-bacheca .carousel-container .carousel-card,
+html body .hero-bacheca .carousel-container .carousel-card {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Reset anche su possibili classi dinamiche */
+[class*="carousel-card"],
+[class*="card-image-container"] {
+  background: none !important;
+  background-color: transparent !important;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+
+@media (max-width: 1024px) {
+  .carousel-container {
+    gap: 25px;
+    padding: 15px 0;
+  }
+  
+  .carousel-card {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  .carousel-container {
+    gap: 20px;
+    padding: 10px 0;
+  }
+  
+  .carousel-card {
+    width: 250px;
+  }
+
+  .hero-bacheca {
+    padding: 40px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .carousel-container {
+    gap: 16px;
+    padding: 8px 0;
+  }
+  
+  .carousel-card {
+    width: 220px;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+  }
+  
+  .card-price {
+    font-size: 1rem;
+  }
+}
+
+/* ===============================================
+   INDICATORI SCROLL (OPZIONALE)
+   =============================================== */
+
+.carousel-container::before,
+.carousel-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-container::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(24, 24, 24, 0.8) 0%,
+    transparent 100%
+  );
+}
+
+.carousel-container::after {
+  right: 0;
+  background: linear-gradient(
+    270deg,
+    rgba(24, 24, 24, 0.8) 0%,
+    transparent 100%
+  );
+}
+
+/* Nascondi indicatori su mobile */
+@media (max-width: 768px) {
+  .carousel-container::before,
+  .carousel-container::after {
+    display: none;
+  }
+}
+
+/* ===============================================
+   PERFORMANCE OPTIMIZATIONS
+   =============================================== */
+
+.carousel-container {
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
+.carousel-card {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.card-image {
+  will-change: transform;
+}
+
+/* ===============================================
+   ACCESSIBILITY
+   =============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-container {
+    scroll-behavior: auto;
+  }
+  
+  .card-overlay {
+    transition: none;
+  }
+  
+  .carousel-card:hover .card-overlay {
+    opacity: 0.8;
+  }
+}
+
+/* Focus states per navigazione da tastiera */
+.carousel-card:focus {
+  outline: 2px solid var(--antique-pink);
+  outline-offset: 4px;
+}
+
+.carousel-card:focus .card-overlay {
+  opacity: 1;
+}
+
+/* ===============================================
+   LOADING STATE
+   =============================================== */
+
+.loading-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* ===============================================
+   FALLBACK PER BROWSER LEGACY
+   =============================================== */
+
+@supports not (scroll-snap-type: x mandatory) {
+  .carousel-container {
+    scroll-snap-type: none;
+  }
+}
+
+@supports not (aspect-ratio: 0.7) {
+  .carousel-card {
+    height: 457px; /* 320px / 0.7 */
+  }
+}

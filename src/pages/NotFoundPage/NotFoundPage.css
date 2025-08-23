@@ -1,0 +1,528 @@
+/* src/pages/NotFoundPage/NotFoundPage.css */
+
+.notfound-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(
+    135deg,
+    var(--light-cream) 0%,
+    rgba(250, 247, 243, 0.9) 40%,
+    rgba(217, 165, 165, 0.1) 70%,
+    rgba(217, 165, 165, 0.05) 100%
+  );
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Performance optimizations */
+  will-change: auto;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Container principale */
+.notfound-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  max-width: 900px;
+  padding: 40px 20px;
+}
+
+/* Container immagine con 3D effect */
+.notfound-image-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 60vh;
+  max-height: 500px;
+  margin-bottom: -80px; /* Sovrappone il pulsante */
+  z-index: 2;
+  
+  /* 3D Setup */
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.notfound-image-container.loading {
+  opacity: 0.7;
+}
+
+.notfound-image-container.loaded {
+  opacity: 1;
+  transition: opacity 0.8s ease-out;
+}
+
+/* Immagine 404 */
+.notfound-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  
+  /* 3D Transforms */
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  
+  /* Filtri per migliorare la qualità */
+  filter: 
+    brightness(1.05)
+    contrast(1.1)
+    saturate(1.1)
+    drop-shadow(0 20px 40px rgba(217, 165, 165, 0.15));
+}
+
+/* Loading placeholder */
+.image-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(250, 247, 243, 0.8);
+  border-radius: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(217, 165, 165, 0.2);
+  border-top: 3px solid var(--antique-pink);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Container quote e pulsanti */
+.notfound-actions-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Quote OnlyOne */
+.onlyone-quote {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.quote-text {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--antique-pink);
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+  
+  /* Subtle glow effect */
+  text-shadow: 0 1px 3px rgba(217, 165, 165, 0.2);
+}
+
+/* Container pulsanti */
+.notfound-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+  align-items: center;
+}
+
+/* Base pulsante OnlyOne Style */
+.notfound-button {
+  position: relative;
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: clamp(16px, 2.5vw, 20px) clamp(32px, 5vw, 40px);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 350px;
+  min-height: 56px;
+  
+  /* Transizioni smooth */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Performance */
+  will-change: transform, box-shadow, background;
+  transform: translateZ(0);
+}
+
+/* Pulsante Primario - Antique Pink */
+.notfound-button--primary {
+  background: var(--antique-pink);
+  color: var(--carbon-black);
+  border: 3px solid var(--antique-pink);
+  
+  /* Shadows multiple */
+  box-shadow: 
+    0 8px 24px rgba(217, 165, 165, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Pulsante Secondario - Outline */
+.notfound-button--secondary {
+  background: rgba(217, 165, 165, 0.1);
+  color: var(--antique-pink);
+  border: 3px solid var(--antique-pink);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  /* Shadows subtle */
+  box-shadow: 
+    0 6px 20px rgba(217, 165, 165, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(217, 165, 165, 0.2);
+}
+
+/* Icona nel pulsante */
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+/* Testo del pulsante */
+.button-text {
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+/* Glow effect interno */
+.button-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Disabled state */
+.notfound-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Hover effects - Pulsante Primario */
+.notfound-button--primary:hover:not(:disabled) {
+  background: var(--light-cream);
+  color: var(--carbon-black);
+  border-color: var(--antique-pink);
+  transform: translateY(-3px) scale(1.02);
+  
+  box-shadow: 
+    0 16px 48px rgba(217, 165, 165, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 0 30px rgba(217, 165, 165, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.notfound-button--primary:hover:not(:disabled) .button-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Hover effects - Pulsante Secondario */
+.notfound-button--secondary:hover:not(:disabled) {
+  background: var(--antique-pink);
+  color: var(--carbon-black);
+  border-color: var(--antique-pink);
+  transform: translateY(-3px) scale(1.02);
+  
+  box-shadow: 
+    0 16px 48px rgba(217, 165, 165, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 0 30px rgba(217, 165, 165, 0.2);
+}
+
+/* Glow hover effect */
+.notfound-button:hover:not(:disabled) .button-glow {
+  left: 100%;
+}
+
+.notfound-button:hover:not(:disabled) .button-text {
+  transform: translateY(-1px);
+}
+
+/* Active state */
+.notfound-button:active:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
+  transition-duration: 0.1s;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .notfound-container {
+    padding: 30px 16px;
+  }
+  
+  .notfound-image-container {
+    height: 55vh;
+    max-height: 450px;
+    margin-bottom: -50px;
+  }
+
+  .notfound-actions-container {
+    margin-top: 70px;
+  }
+
+  .onlyone-quote {
+    margin-bottom: 35px;
+  }
+}
+
+@media (max-width: 768px) {
+  .notfound-container {
+    padding: 20px 12px;
+  }
+  
+  .notfound-image-container {
+    height: 50vh;
+    max-height: 400px;
+    margin-bottom: -40px;
+  }
+
+  .notfound-actions-container {
+    margin-top: 60px;
+    max-width: 100%;
+  }
+
+  .onlyone-quote {
+    margin-bottom: 30px;
+  }
+
+  .quote-text {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+  }
+  
+  .notfound-buttons-group {
+    gap: 14px;
+    max-width: 100%;
+  }
+
+  .notfound-button {
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    padding: clamp(14px, 3vw, 18px) clamp(28px, 6vw, 36px);
+    min-height: 52px;
+  }
+  
+  /* Riduce effetto 3D su mobile */
+  .notfound-image {
+    filter: 
+      brightness(1.02)
+      contrast(1.05)
+      saturate(1.05)
+      drop-shadow(0 10px 20px rgba(217, 165, 165, 0.1));
+  }
+}
+
+@media (max-width: 480px) {
+  .notfound-image-container {
+    height: 45vh;
+    max-height: 350px;
+    margin-bottom: -30px;
+  }
+
+  .notfound-actions-container {
+    margin-top: 50px;
+    padding: 0 8px;
+  }
+
+  .onlyone-quote {
+    margin-bottom: 25px;
+  }
+
+  .quote-text {
+    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+    padding: 0 16px;
+  }
+  
+  .notfound-buttons-group {
+    gap: 12px;
+  }
+
+  .notfound-button {
+    width: 100%;
+    max-width: 280px;
+    font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+    padding: clamp(12px, 3.5vw, 16px) clamp(24px, 7vw, 32px);
+    min-height: 48px;
+  }
+
+  .button-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .notfound-image-container {
+    height: 60vh;
+    margin-bottom: -20px;
+  }
+  
+  .notfound-actions-container {
+    margin-top: 30px;
+  }
+
+  .onlyone-quote {
+    margin-bottom: 20px;
+  }
+
+  .notfound-buttons-group {
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .notfound-button {
+    flex: 1;
+    min-width: 140px;
+    max-width: 180px;
+  }
+}
+
+/* ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  .notfound-image {
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .notfound-button {
+    transition: none !important;
+  }
+  
+  .notfound-button:hover {
+    transform: none !important;
+  }
+  
+  .button-glow {
+    display: none;
+  }
+  
+  .button-icon {
+    transition: none !important;
+  }
+  
+  .button-icon:hover {
+    transform: none !important;
+  }
+  
+  .loading-spinner {
+    animation: none !important;
+    border: 3px solid var(--antique-pink);
+    border-top: 3px solid transparent;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .notfound-page {
+    background: var(--light-cream);
+  }
+  
+  .notfound-button--primary {
+    border-width: 4px;
+    box-shadow: none;
+  }
+
+  .notfound-button--secondary {
+    border-width: 4px;
+    box-shadow: none;
+    background: transparent;
+  }
+  
+  .quote-text {
+    text-shadow: none;
+    font-weight: 600;
+  }
+  
+  .notfound-image {
+    filter: contrast(1.3);
+  }
+}
+
+/* Focus states */
+.notfound-button:focus-visible {
+  outline: 3px solid var(--antique-pink);
+  outline-offset: 4px;
+}
+
+/* Print styles */
+@media print {
+  .notfound-page {
+    background: white;
+    color: black;
+  }
+  
+  .button-glow,
+  .loading-spinner {
+    display: none;
+  }
+  
+  .notfound-button--primary {
+    border: 2px solid black;
+    color: black;
+    background: white;
+  }
+
+  .notfound-button--secondary {
+    border: 2px solid black;
+    color: black;
+    background: white;
+  }
+
+  .quote-text {
+    color: #666;
+  }
+
+  .button-icon {
+    filter: invert(1);
+  }
+}

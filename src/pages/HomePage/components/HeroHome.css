@@ -1,0 +1,242 @@
+/* src/pages/HomePage/components/HeroHome.css - FINAL VERSION */
+
+/* Import Libre Bodoni font */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* SEZIONE 1: HOME - Definitive Dark Hero */
+.hero-home {
+  position: relative;
+  min-height: 100vh;
+  background: var(--carbon-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 24px;
+  z-index: 2;
+}
+
+/* Spotlight effect background - Opacità aumentata per match con foto */
+.hero-home__spotlight {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vh;
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 165, 165, 0.15) 0%,
+    rgba(217, 165, 165, 0.08) 30%,
+    rgba(217, 165, 165, 0.03) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* NUOVO: Wrapper per immagine + alone */
+.hero-home__image-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Container immagine - ESPANSO per contenere l'alone che respira */
+.hero-home__image-container {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Espandi il contenitore per l'alone che respira */
+  min-width: 60vh;
+  min-height: 60vh;
+}
+
+.hero-home__hero-image {
+  position: relative;
+  z-index: 3; /* Sopra l'alone */
+  width: auto;
+  height: 70vh;
+  max-width: 80vw;
+  object-fit: contain;
+  object-position: center;
+  
+  /* 3D Effects Stack */
+  filter: 
+    brightness(1.1)
+    contrast(1.15)
+    saturate(1.2)
+    drop-shadow(0 30px 80px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 10px 30px rgba(217, 165, 165, 0.15));
+  
+  /* Blend for integration */
+  mix-blend-mode: screen;
+  will-change: transform, filter;
+  
+  /* Assicura che l'immagine sia il punto di riferimento */
+  display: block;
+  margin: 0 auto;
+}
+
+/* Glow effect behind image - DISABILITATO (ora usiamo spotlight) */
+.hero-home__image-glow {
+  display: none;
+}
+
+/* Central content */
+.hero-home__content {
+  position: relative;
+  z-index: 10; /* Sopra tutto */
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+.hero-home__text-block {
+  will-change: transform;
+  /* Animation will be handled by HeroAnimations */
+}
+
+/* Main title styling */
+.hero-home__main-title {
+  margin: 0 0 32px 0;
+  line-height: 1.1;
+}
+
+.hero-home__title-line {
+  display: block;
+  font-family: 'Libre Bodoni', serif;
+  font-weight: 400;
+  color: var(--light-cream);
+  font-size: clamp(20px, 3vw, 36px);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.hero-home__title-brand {
+  display: block;
+  font-family: 'Libre Bodoni', serif;
+  font-weight: 700;
+  color: var(--antique-pink);
+  font-size: clamp(32px, 5vw, 72px);
+  margin-top: 16px;
+  letter-spacing: 2px;
+}
+
+/* Quote styling */
+.hero-home__quote {
+  font-family: 'Libre Bodoni', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--light-cream);
+  font-size: clamp(16px, 2vw, 22px);
+  position: relative;
+  top: -16px;
+}
+
+/* CTA Button */
+.hero-home__cta-button {
+  background: var(--light-cream) !important;
+  color: var(--carbon-black) !important;
+  border: 2px solid var(--light-cream);
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(14px, 1.5vw, 18px);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: clamp(16px, 2vw, 24px) clamp(32px, 4vw, 48px);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 24px rgba(250, 247, 243, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hero-home__cta-button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 16px 48px rgba(250, 247, 243, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  background: var(--antique-pink) !important;
+  border-color: var(--antique-pink);
+  color: var(--carbon-black) !important;
+}
+
+.hero-home__cta-button:active {
+  transform: scale(1.02) translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-home {
+    padding: 0 16px;
+  }
+  
+  .hero-home__content {
+    max-width: 100%;
+  }
+  
+  .hero-home__image-wrapper {
+    max-width: 90vw;
+    max-height: 70vh;
+  }
+  
+  .hero-home__spotlight {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    height: 80vh;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 165, 165, 0.15) 0%,
+      rgba(217, 165, 165, 0.08) 30%,
+      rgba(217, 165, 165, 0.03) 50%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .hero-home__hero-image {
+    height: 50vh;
+    max-width: 95vw;
+  }
+  
+  .hero-home__title-line {
+    font-size: clamp(18px, 4vw, 28px);
+  }
+  
+  .hero-home__title-brand {
+    font-size: clamp(28px, 7vw, 48px);
+  }
+  
+  .hero-home__quote {
+    font-size: clamp(14px, 3vw, 18px);
+  }
+  
+  .hero-home__cta-button {
+    font-size: clamp(12px, 2vw, 16px);
+    padding: clamp(14px, 3vw, 20px) clamp(28px, 6vw, 40px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-home__hero-image {
+    height: 75vh;
+  }
+  
+  .hero-home__spotlight {
+    width: 140vh;
+    height: 140vh;
+  }
+}

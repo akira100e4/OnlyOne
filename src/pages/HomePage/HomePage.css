@@ -1,0 +1,315 @@
+/* src/pages/HomePage/HomePage.css - VERSIONE OTTIMIZZATA PER GRADIENT FLUIDO */
+
+.home-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden; /* Solo orizzontale */
+  overflow-y: visible; /* Permetti sconfinamento verticale */
+}
+
+/* 🔥 BACKGROUND DINAMICO OTTIMIZZATO - Ultra-smooth */
+.home-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* 🔥 GRADIENT FLUIDO MIGLIORATO - usa il nuovo sistema */
+  background: var(--dynamic-gradient, linear-gradient(
+    180deg,
+    var(--dynamic-color-start, var(--carbon-black)) 0%,
+    var(--dynamic-color-mid, var(--carbon-black)) 30%,
+    var(--dynamic-color-start, var(--carbon-black)) 70%,
+    var(--dynamic-color-end, var(--carbon-black)) 100%
+  ));
+  
+  z-index: -1;
+  pointer-events: none;
+  
+  /* 🔥 TRANSIZIONE OTTIMIZZATA per fluidità massima */
+  transition: background 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: background;
+}
+
+/* 🔥 SMOOTH BLENDING per le sezioni critiche */
+.home-page .hero-newsletter,
+.home-page .contact-section {
+  position: relative;
+  isolation: isolate; /* Crea nuovo stacking context */
+}
+
+/* 🔥 ANTI-FLICKERING per le transizioni */
+.home-page .hero-newsletter::before,
+.home-page .contact-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: -1;
+  
+  /* Stabilizza il rendering durante lo scroll */
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+/* ===========================================
+   HERO SECTION STYLING (invariato)
+   =========================================== */
+
+.home-page .hero-home {
+  background: transparent !important;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+
+.home-page .hero-section {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+/* ===========================================
+   Z-INDEX LAYERING SYSTEM (invariato)
+   =========================================== */
+
+.home-page header {
+  position: relative;
+  z-index: 3;
+  overflow: visible;
+}
+
+/* ===========================================
+   BACHECA SECTION STYLING (invariato)
+   =========================================== */
+
+.home-page .hero-bacheca {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+  padding-top: 60px;
+}
+
+.home-page .hero-bacheca .hero-title {
+  position: relative;
+  z-index: 30;
+  opacity: 0.6;
+  color: var(--light-cream);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  margin-bottom: 60px;
+}
+
+.home-page .hero-bacheca .pinterest-grid {
+  position: relative;
+  z-index: 100;
+}
+
+.home-page .hero-bacheca .pinterest-card {
+  position: relative;
+  z-index: 101;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(2px);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.home-page .hero-bacheca .pinterest-card:hover {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(4px);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.home-page .hero-bacheca .card-title,
+.home-page .hero-bacheca .card-price {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  position: relative;
+  z-index: 102;
+}
+
+.home-page .hero-bacheca .card-button {
+  position: relative;
+  z-index: 103;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+/* ===========================================
+   🔥 NUOVE OTTIMIZZAZIONI PER TRANSIZIONI SEZIONI
+   =========================================== */
+
+/* Newsletter section - stabilizzazione */
+.home-page .hero-newsletter {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+  
+  /* 🔥 SMOOTH TRANSITION HELPER */
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Contact section - stabilizzazione */
+.home-page .contact-section {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+  
+  /* 🔥 SMOOTH TRANSITION HELPER */
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* 🔥 ANTI-BANDING per gradienti molto sfumati */
+.home-page::before {
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN OTTIMIZZATO
+   =========================================== */
+
+/* Mobile - transizioni più dolci */
+@media (max-width: 768px) {
+  .home-page::before {
+    /* Transizione leggermente più lenta su mobile per compensare touch scroll */
+    transition: background 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    /* Rimuovi background-attachment su mobile per performance */
+    background-attachment: scroll;
+  }
+  
+  .home-page .hero-bacheca .hero-title {
+    opacity: 1;
+    text-shadow: none;
+  }
+  
+  .home-page .hero-bacheca .pinterest-card {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: none;
+  }
+}
+
+/* Tablet - valore intermedio */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .home-page .hero-bacheca .hero-title {
+    opacity: 0.7;
+  }
+  
+  .home-page::before {
+    transition: background 0.12s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+/* Desktop - massima fluidità */
+@media (min-width: 1201px) {
+  .home-page::before {
+    transition: background 0.08s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS AVANZATE
+   =========================================== */
+
+/* Smooth scroll behavior ottimizzato */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 🔥 OTTIMIZZAZIONE GPU per scroll fluido */
+@supports (will-change: background) {
+  .home-page::before {
+    will-change: background;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
+
+/* 🔥 FALLBACK per browser che non supportano custom properties */
+@supports not (background: var(--dynamic-gradient)) {
+  .home-page::before {
+    background: linear-gradient(
+      180deg,
+      #181818 0%,
+      #181818 70%,
+      #2a2525 85%,
+      #D9A5A5 100%
+    );
+  }
+}
+
+/* Accessibility - movimento ridotto */
+@media (prefers-reduced-motion: reduce) {
+  .home-page::before {
+    background: var(--carbon-black) !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .home-page .hero-bacheca .pinterest-card {
+    backdrop-filter: none !important;
+  }
+  
+  /* Disabilita tutte le transizioni fluide */
+  .home-page .hero-newsletter,
+  .home-page .contact-section {
+    transform: none !important;
+  }
+}
+
+/* High refresh rate displays - transizioni ultra-fluide */
+@media (min-resolution: 120dpi) {
+  .home-page::before {
+    transition: background 0.05s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+/* ===========================================
+   DEBUG E TROUBLESHOOTING
+   =========================================== */
+
+/* Debug panel migliorato */
+.scroll-debug {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  z-index: 9999;
+  display: none; /* Cambia a 'block' per debug */
+  border: 1px solid rgba(217, 165, 165, 0.3);
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+}
+
+/* Indicatore visivo di qualità transizione */
+.home-page.smooth-transition::before {
+  box-shadow: inset 0 0 0 1px rgba(0, 255, 0, 0.1); /* Verde = transizioni fluide */
+}
+
+.home-page.jerky-transition::before {
+  box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 0.1); /* Rosso = transizioni non fluide */
+}
+
+/* Print styles */
+@media print {
+  .home-page::before {
+    background: white !important;
+    display: none;
+  }
+  
+  .scroll-debug {
+    display: none !important;
+  }
+}

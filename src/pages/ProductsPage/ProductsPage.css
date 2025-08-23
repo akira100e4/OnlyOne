@@ -1,0 +1,1060 @@
+/* src/pages/ProductsPage/ProductsPage.css - VERSIONE COMPLETA CON TUTTE LE SEZIONI */
+
+.products-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--light-cream) 0%,
+    rgba(250, 247, 243, 0.9) 40%,
+    rgba(217, 165, 165, 0.3) 70%,
+    var(--antique-pink) 100%
+  ) !important;
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 200px; /* Aumentato per compensare il footer + contenuto griglia */
+}
+
+/* 🔥 FIX SAFARI: Header con blur confinato in pseudo-elemento */
+.products-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 🔥 CRITICO: Rimuovi blur diretto - era la causa del problema */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  
+  /* 🔥 ISOLAMENTO: Nuovo stacking context per confinare il blur */
+  isolation: isolate;
+  contain: paint;
+  
+  /* Performance per transizioni */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* 🔥 BLUR CONFINATO: Pseudo-elemento che non contamina le cards */
+.products-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 247, 243, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(24, 24, 24, 0.1);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.products-header--scrolled::before {
+  background: rgba(250, 247, 243, 0.98);
+  box-shadow: 0 2px 20px rgba(24, 24, 24, 0.08);
+}
+
+/* Header container e contenuto - INVARIATO */
+.products-header__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sezioni header - INVARIATO */
+.products-header__left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.products-header__center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.products-header__right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo e icone - INVARIATO */
+.products-header__logo {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.products-header__logo:hover {
+  background: rgba(24, 24, 24, 0.05);
+  transform: scale(1.05);
+}
+
+.products-header__logo-img {
+  height: 44px;
+  width: auto;
+  filter: none;
+  transition: filter 0.3s ease;
+}
+
+.products-header__logo:hover .products-header__logo-img {
+  filter: brightness(0.8);
+}
+
+.products-header__icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--carbon-black);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.products-header__icon-btn:hover {
+  background: rgba(24, 24, 24, 0.08);
+  color: var(--antique-pink);
+  transform: scale(1.1);
+}
+
+.products-header__icon-btn:active {
+  transform: scale(1.05);
+}
+
+/* 🔥 SOSTITUIRE QUESTE REGOLE NEL ProductsPage.css ESISTENTE */
+
+/* Badge preferiti nell'header - POSIZIONE CORRETTA SUL CUORE */
+.header-badge {
+  position: absolute;
+  top: 4px;      /* 🔥 CAMBIATO: da -6px a 4px (più in basso) */
+  right: 4px;    /* 🔥 CAMBIATO: da -6px a 4px (più a sinistra) */
+  background: var(--antique-pink);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(217, 165, 165, 0.4);
+  
+  /* 🔥 BORDER BIANCO per staccarsi dal cuore */
+  border: 1.5px solid white;
+  
+  /* Animazione */
+  animation: badgeAppear 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Hero section - CON PERFORMANCE OPTIMIZATION */
+.products-hero {
+  padding-top: 120px;
+  padding-bottom: 40px; /* Ridotto per avvicinare alla griglia */
+  background: transparent;
+  
+  /* Performance per transizioni */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.products-hero__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  text-align: center;
+}
+
+.products-hero__title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--carbon-black);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  
+  text-shadow: 0 1px 3px rgba(24, 24, 24, 0.08);
+}
+
+/* Animazioni titolo Apple-style - INVARIATO */
+.products-hero__title-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  animation: appleTextReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.products-hero__title-line:first-child {
+  animation-delay: 0.3s;
+}
+
+.products-hero__title-line:last-child {
+  animation-delay: 0.7s;
+}
+
+@keyframes appleTextReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    letter-spacing: 0.02em;
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(2px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    letter-spacing: -0.02em;
+  }
+}
+
+.products-hero__title-line {
+  position: relative;
+}
+
+.products-hero__title-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 120%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(217, 165, 165, 0.04) 0%,
+    rgba(217, 165, 165, 0.02) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  animation: appleGlowAppear 1.5s ease-out 1.5s both;
+}
+
+@keyframes appleGlowAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 🔥 AGGIUNTI: Stili per le sezioni mancanti */
+
+/* Products Section */
+.products-section {
+  padding: 20px 0 80px;
+  background: transparent;
+  
+  /* Performance per transizioni */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.products-section__container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Products End Section - 🔥 FOOTER ATTACCATO AL FONDO */
+.products-end-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: transparent;
+  padding: 0;
+  
+  /* Performance per transizioni */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.products-end-section__container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.products-end {
+  text-align: center;
+  padding: 24px 32px 32px;
+  background: rgba(250, 247, 243, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 -10px 40px rgba(24, 24, 24, 0.08);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+/* Primo messaggio - sempre visibile */
+.products-end__first-message {
+  margin-bottom: 20px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.products-end__first-message p {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  color: var(--carbon-black);
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* Secondo messaggio - fade in allo scroll */
+.products-end__second-message {
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.products-end__second-message.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.products-end__second-message p {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--antique-pink);
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  font-style: italic;
+}
+
+/* Bottoni azione - appaiono per ultimi */
+.products-end__actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+}
+
+.products-end__actions.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.products-end__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: var(--carbon-black);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  min-width: 140px;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(24, 24, 24, 0.1);
+}
+
+.products-end__btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(24, 24, 24, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.products-end__btn--favorites {
+  border-color: var(--antique-pink);
+}
+
+.products-end__btn--favorites:hover {
+  background: var(--antique-pink);
+  color: white;
+  border-color: var(--antique-pink);
+}
+
+.products-end__btn--cart {
+  border-color: var(--carbon-black);
+}
+
+.products-end__btn--cart:hover {
+  background: var(--carbon-black);
+  color: white;
+  border-color: var(--carbon-black);
+}
+
+/* Badge nel footer - POSIZIONE CORRETTA SUL CUORE */
+.btn-badge {
+  position: absolute;
+  top: 4px;      /* 🔥 CAMBIATO: da -6px a 4px (più in basso) */
+  right: 4px;    /* 🔥 CAMBIATO: da -6px a 4px (più a sinistra) */
+  background: var(--antique-pink);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(217, 165, 165, 0.4);
+  
+  /* 🔥 BORDER BIANCO per staccarsi dal cuore */
+  border: 1.5px solid white;
+  
+  /* Animazione */
+  animation: badgeAppear 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 🔥 ANIMAZIONI BADGE (invariate) */
+@keyframes badgeAppear {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes badgeFlash {
+  0% {
+    background: var(--antique-pink);
+    transform: scale(1);
+  }
+  50% {
+    background: #ff6b35;
+    transform: scale(1.15);
+  }
+  100% {
+    background: var(--antique-pink);
+    transform: scale(1);
+  }
+}
+
+/* 🔥 STATI DINAMICI DEL BOTTONE PREFERITI (invariati) */
+.products-end__btn--favorites.has-favorites {
+  border-color: var(--antique-pink);
+  background: rgba(217, 165, 165, 0.1);
+}
+
+.products-end__btn--favorites.has-favorites:hover {
+  background: var(--antique-pink);
+  color: white;
+  border-color: var(--antique-pink);
+}
+
+.products-end__btn--favorites.has-favorites:hover .btn-badge {
+  background: white;
+  color: var(--antique-pink);
+  border-color: var(--antique-pink); /* 🔥 AGGIUNTO: border rimane visibile */
+}
+
+.products-end__btn--favorites.no-favorites {
+  border-color: rgba(136, 136, 136, 0.3);
+  background: rgba(136, 136, 136, 0.05);
+  opacity: 0.7;
+}
+
+.products-end__btn--favorites.no-favorites:hover {
+  background: rgba(136, 136, 136, 0.1);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Products content wrapper - 🔥 AGGIORNATO per supportare tutte le sezioni */
+.products-content {
+  /* Performance per transizioni */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Hidden states per loader - 🔥 AGGIORNATI per tutte le sezioni */
+.products-header--hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.products-hero--hidden {
+  opacity: 0;
+  transform: translateY(30px);
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,
+              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+}
+
+.products-section--hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
+              transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+}
+
+.products-end-section--hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0.6s,
+              transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
+}
+
+.products-content--hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
+              transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+}
+
+/* Transizioni di entrata - 🔥 AGGIORNATE per tutte le sezioni */
+.products-header:not(.products-header--hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.products-hero:not(.products-hero--hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
+              transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+}
+
+.products-section:not(.products-section--hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s,
+              transform 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+}
+
+.products-end-section:not(.products-end-section--hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s,
+              transform 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+}
+
+.products-content:not(.products-content--hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s,
+              transform 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+}
+
+/* RESPONSIVE DESIGN - INVARIATO */
+@media (max-width: 1024px) {
+  .products-header__container {
+    padding: 0 24px;
+  }
+  
+  .products-hero__container {
+    padding: 0 24px;
+  }
+  
+  .products-section__container {
+    padding: 0 24px;
+  }
+  
+  .products-end-section__container {
+    padding: 0 24px;
+  }
+  
+  .products-end {
+    padding: 20px 24px 28px;
+  }
+  
+  .products-end__actions {
+    gap: 12px;
+  }
+  
+  .products-end__btn {
+    padding: 10px 20px;
+    min-width: 120px;
+    font-size: 0.85rem;
+  }
+  
+  .products-page {
+    padding-bottom: 220px; /* Aumentato per mobile con griglia */
+  }
+  
+  .products-header__right {
+    gap: 20px;
+  }
+  
+  .products-header__logo-img {
+    height: 38px;
+  }
+  
+  .products-header:not(.products-header--hidden),
+  .products-hero:not(.products-hero--hidden),
+  .products-section:not(.products-section--hidden),
+  .products-end-section:not(.products-end-section--hidden),
+  .products-content:not(.products-content--hidden) {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .products-header--hidden,
+  .products-hero--hidden,
+  .products-section--hidden,
+  .products-end-section--hidden,
+  .products-content--hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: all !important;
+  }
+  
+  .products-hero__title-line {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  .products-hero__title-line::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  
+  .products-header,
+  .products-header__logo,
+  .products-header__icon-btn {
+    transition: none !important;
+  }
+  
+  .products-header__icon-btn:hover,
+  .products-header__logo:hover {
+    transform: none !important;
+  }
+  
+  /* 🔥 ACCESSIBILITY - Reduced motion */
+  .header-badge,
+  .btn-badge {
+    animation: none !important;
+  }
+  
+  .products-end__btn--favorites:hover {
+    transform: none !important;
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .products-header::before {
+    background: var(--light-cream);
+    border-bottom: 2px solid var(--carbon-black);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .products-header__icon-btn {
+    border: 1px solid var(--carbon-black);
+  }
+  
+  .products-hero__title-line::after {
+    display: none;
+  }
+  
+  .products-end {
+    background: white;
+    border: 2px solid var(--carbon-black);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  /* 🔥 HIGH CONTRAST MODE - AGGIORNATO */
+  .header-badge,
+  .btn-badge {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff; /* 🔥 BORDER più spesso in high contrast */
+  }
+  
+  .products-end__btn--favorites.has-favorites {
+    border-color: #000;
+    background: #fff;
+  }
+  
+  .products-end__btn--favorites.has-favorites:hover .btn-badge {
+    background: #fff;
+    color: #000;
+    border-color: #000;
+  }
+}
+
+/* Print styles */
+@media print {
+  .products-header {
+    position: static;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .products-header::before {
+    background: white;
+    box-shadow: none;
+    border-bottom: 1px solid #ccc;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .products-hero {
+    padding-top: 20px;
+  }
+  
+  .products-header--hidden,
+  .products-hero--hidden,
+  .products-section--hidden,
+  .products-end-section--hidden,
+  .products-content--hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: all !important;
+  }
+  
+  .products-hero__title-line::after {
+    display: none;
+  }
+  
+  .products-end {
+    background: white;
+    border: 1px solid #ccc;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Performance optimizations avanzate */
+.products-header,
+.products-hero,
+.products-section,
+.products-end-section,
+.products-content {
+  transform: translateZ(0);
+  will-change: opacity, transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+}
+
+.products-header:not(.products-header--hidden),
+.products-hero:not(.products-hero--hidden),
+.products-section:not(.products-section--hidden),
+.products-end-section:not(.products-end-section--hidden),
+.products-content:not(.products-content--hidden) {
+  will-change: auto;
+}
+
+.products-page {
+  contain: layout style;
+}
+
+/* Assicura z-index corretto */
+.products-header {
+  z-index: 1000;
+}
+
+.products-hero,
+.products-section,
+.products-end-section,
+.products-content {
+  z-index: 1;
+}-section--hidden,
+  .products-end-section:not(.products-end-section--hidden),
+  .products-content:not(.products-content--hidden) {
+    transition-duration: 1s, 1s;
+  }
+
+@media (max-width: 768px) {
+  .products-header__container {
+    padding: 0 16px;
+    grid-template-columns: auto 1fr auto;
+  }
+  
+  .products-hero {
+    padding-top: 100px;
+    padding-bottom: 30px;
+  }
+  
+  .products-hero__container {
+    padding: 0 16px;
+  }
+  
+  .products-section {
+    padding: 10px 0 60px;
+  }
+  
+  .products-section__container {
+    padding: 0 16px;
+  }
+  
+  .products-end-section__container {
+    padding: 0 16px;
+  }
+  
+  .products-end {
+    padding: 16px 20px 24px;
+  }
+  
+  .products-end__actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .products-end__btn {
+    padding: 12px 20px;
+    min-width: 160px;
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .products-end__first-message p {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+  }
+  
+  .products-end__second-message p {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  }
+  
+  .products-page {
+    padding-bottom: 240px; /* Aumentato per mobile con bottoni in colonna + griglia */
+  }
+  
+  .products-hero__title {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    gap: 0.1em;
+  }
+  
+  .products-header__icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .products-header__logo-img {
+    height: 32px;
+  }
+  
+  .products-header__right {
+    gap: 16px;
+  }
+  
+  .products-hero--hidden {
+    transition-delay: 0.1s;
+  }
+  
+  .products-section--hidden {
+    transition-delay: 0.2s;
+  }
+  
+  .products-end-section--hidden {
+    transition-delay: 0.3s;
+  }
+  
+  .products-content--hidden {
+    transition-delay: 0.2s;
+  }
+  
+  .products-end {
+    padding: 30px 16px;
+  }
+  
+  .products-end p {
+    font-size: 1.3rem;
+  }
+  
+  .favorites-summary {
+    font-size: 1.1rem !important;
+  }
+  
+  /* 🔥 RESPONSIVE BADGE - POSIZIONI AGGIORNATE */
+  .header-badge,
+  .btn-badge {
+    font-size: 0.65rem;
+    padding: 1px 5px;
+    min-width: 14px;
+    height: 14px;
+    top: 5px;    /* 🔥 AGGIORNATO: proporzionale al nuovo posizionamento */
+    right: 5px;  /* 🔥 AGGIORNATO: proporzionale al nuovo posizionamento */
+    border-width: 1px; /* 🔥 BORDER più sottile su mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .products-header__container {
+    padding: 0 12px;
+  }
+  
+  .products-hero {
+    padding-top: 90px;
+    padding-bottom: 20px;
+  }
+  
+  .products-hero__container {
+    padding: 0 12px;
+  }
+  
+  .products-section {
+    padding: 5px 0 50px;
+  }
+  
+  .products-section__container {
+    padding: 0 12px;
+  }
+  
+  .products-end-section__container {
+    padding: 0 12px;
+  }
+  
+  .products-end {
+    padding: 14px 16px 20px;
+  }
+  
+  .products-end__btn {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+  }
+  
+  .products-page {
+    padding-bottom: 250px; /* Aumentato per dispositivi molto piccoli */
+  }
+  
+  .products-header__icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .products-header__logo-img {
+    height: 28px;
+  }
+  
+  .products-header__right {
+    gap: 12px;
+  }
+  
+  .products-hero__title {
+    gap: 0.05em;
+  }
+  
+  .products-header:not(.products-header--hidden),
+  .products-hero:not(.products-hero--hidden),
+  .products-section:not(.products-section--hidden),
+  .products-end-section:not(.products-end-section--hidden),
+  .products-content:not(.products-content--hidden) {
+    transition-duration: 0.8s, 0.8s;
+  }
+  
+  .products-end {
+    padding: 24px 12px;
+  }
+  
+  .products-end p {
+    font-size: 1.2rem;
+  }
+  
+  .favorites-summary {
+    font-size: 1rem !important;
+  }
+  
+  .header-badge,
+  .btn-badge {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    min-width: 12px;
+    height: 12px;
+    top: 6px;    /* 🔥 AGGIORNATO: proporzionale al nuovo posizionamento */
+    right: 6px;  /* 🔥 AGGIORNATO: proporzionale al nuovo posizionamento */
+    border-width: 1px; /* 🔥 BORDER più sottile su mobile piccolo */
+  }
+}
+
+/* Focus states - INVARIATO */
+.products-header__logo:focus-visible,
+.products-header__icon-btn:focus-visible {
+  outline: 2px solid var(--antique-pink);
+  outline-offset: 2px;
+}
+
+/* Reduced motion - AGGIORNATO per tutte le sezioni */
+@media (prefers-reduced-motion: reduce) {
+  .products-header--hidden,
+  .products-hero--hidden,
+  .products-section--hidden,
+  .products-end-section--hidden,
+  .products-content--hidden,
+  .products-header:not(.products-header--hidden),
+  .products-hero:not(.products-hero--hidden),
+  .products-section:not(.products-section--hidden),
+  .products-end-section:not(.products-end-section--hidden),
+  .products-content:not(.products-content--hidden) {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,655 @@
+/* src/pages/HomePage/components/HeroNewsletter.css - UPDATED BUTTON & INPUT STYLES */
+
+/* ===========================================
+   HERO NEWSLETTER SECTION - PINTEREST DESIGN
+   =========================================== */
+
+.hero-newsletter {
+  position: relative;
+  min-height: auto;
+  background: transparent;
+  padding: 40px 0 80px 0 !important;
+  margin: 0;
+  margin-bottom: 150px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.newsletter-container {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+  padding: 0 20px;
+  margin: 0;
+}
+
+/* ===========================================
+   🎨 PINTEREST-STYLE FORM CONTAINER
+   =========================================== */
+
+.newsletter-form-column {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  order: 2;
+  width: 100%;
+}
+
+.newsletter-form {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+}
+
+/* ===========================================
+   🔥 UNDERLINED INPUT FIELD - UPDATED FOCUS
+   =========================================== */
+
+.newsletter-input-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+.newsletter-input-underlined {
+  /* 🎯 BASE STYLING */
+  width: 100%;
+  padding: 20px 0 16px 0;
+  border: none;
+  border-bottom: 2px solid rgba(120, 120, 120, 0.3);
+  background: transparent;
+  outline: none;
+  
+  /* 🎨 TYPOGRAPHY */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--light-cream);
+  letter-spacing: 0.3px;
+  
+  /* 🔥 SMOOTH TRANSITIONS */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 🎯 PERFORMANCE */
+  will-change: border-color, color;
+}
+
+/* 🎨 PLACEHOLDER STYLING - PINTEREST INSPIRED */
+.newsletter-input-underlined::placeholder {
+  color: rgba(180, 180, 180, 0.7);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+/* 🔥 FOCUS STATE - ONLY UNDERLINE (NO FULL BORDER) */
+.newsletter-input-underlined:focus {
+  border-bottom: 2px solid var(--antique-pink);
+  color: var(--light-cream);
+  transform: translateY(-1px);
+  /* 🔥 REMOVED: any full border styling */
+  outline: none;
+  box-shadow: none;
+}
+
+.newsletter-input-underlined:focus::placeholder {
+  opacity: 0.4;
+  transform: translateY(-2px);
+  color: rgba(217, 165, 165, 0.6);
+}
+
+/* 🎯 ACTIVE/FILLED STATE */
+.newsletter-input-underlined:not(:placeholder-shown) {
+  border-bottom-color: rgba(217, 165, 165, 0.5);
+  color: var(--light-cream);
+}
+
+/* 🔥 SUCCESS STATE */
+.newsletter-input-wrapper.success .newsletter-input-underlined {
+  border-bottom-color: rgba(76, 175, 80, 0.8);
+  color: rgba(76, 175, 80, 0.9);
+}
+
+.newsletter-input-wrapper.success .newsletter-input-underlined::placeholder {
+  color: rgba(76, 175, 80, 0.8);
+}
+
+/* 🔥 ERROR STATE */
+.newsletter-input-wrapper.error .newsletter-input-underlined {
+  border-bottom-color: rgba(244, 67, 54, 0.8);
+  color: rgba(244, 67, 54, 0.9);
+  animation: inputShake 0.4s ease-in-out;
+}
+
+.newsletter-input-wrapper.error .newsletter-input-underlined::placeholder {
+  color: rgba(244, 67, 54, 0.8);
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* 🎯 UNDERLINE GLOW EFFECT */
+.newsletter-input-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--antique-pink) 50%,
+    transparent 100%
+  );
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.newsletter-input-wrapper:focus-within::after {
+  width: 100%;
+}
+
+/* ===========================================
+   🔥 SOLID BUTTON STYLE - MATCHING "CLAIM YOURS NOW"
+   =========================================== */
+
+.newsletter-cta-button {
+  /* 🎨 SOLID BACKGROUND - MATCHING CLAIM YOURS NOW */
+  background: var(--light-cream) !important;
+  color: var(--carbon-black) !important;
+  border: 2px solid var(--light-cream);
+  
+  /* 🎯 STYLING */
+  width: 100%;
+  padding: clamp(16px, 2vw, 20px) clamp(32px, 4vw, 40px);
+  border-radius: 50px; /* Matching the rounded style */
+  
+  /* 🎨 TYPOGRAPHY - MATCHING CLAIM YOURS NOW */
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  
+  /* 🔥 INTERACTIONS */
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  
+  /* 🎯 TRANSITIONS */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 🔥 SHADOWS - MATCHING CLAIM YOURS NOW */
+  box-shadow: 
+    0 8px 24px rgba(250, 247, 243, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  
+  /* 🎯 PERFORMANCE */
+  will-change: transform, box-shadow, background;
+}
+
+/* 🔥 BUTTON TEXT Z-INDEX */
+.button-text {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* 🎯 BUTTON HOVER EFFECT - MATCHING CLAIM YOURS NOW */
+.newsletter-cta-button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 16px 48px rgba(250, 247, 243, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  background: var(--antique-pink) !important;
+  border-color: var(--antique-pink);
+  color: var(--carbon-black) !important;
+}
+
+.newsletter-cta-button:hover .button-text {
+  transform: translateY(-1px);
+}
+
+/* 🎯 BUTTON ACTIVE STATE */
+.newsletter-cta-button:active {
+  transform: scale(1.02) translateY(0);
+  box-shadow: 
+    0 4px 16px rgba(250, 247, 243, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.newsletter-cta-button:active .button-text {
+  transform: translateY(0);
+}
+
+/* 🔥 RIPPLE EFFECT - SIMPLIFIED */
+.button-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(24, 24, 24, 0.1);
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.newsletter-cta-button:active .button-ripple {
+  width: 300px;
+  height: 300px;
+  opacity: 0;
+}
+
+/* 🔥 SHIMMER EFFECT - UPDATED FOR SOLID BUTTON */
+.newsletter-cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(217, 165, 165, 0.3) 45%,
+    rgba(217, 165, 165, 0.5) 50%,
+    rgba(217, 165, 165, 0.3) 55%,
+    transparent 100%
+  );
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.newsletter-cta-button:hover::before {
+  left: 100%;
+}
+
+/* 🎯 DISABLED STATE */
+.newsletter-cta-button:disabled {
+  background: rgba(250, 247, 243, 0.3) !important;
+  color: rgba(180, 180, 180, 0.7) !important;
+  cursor: not-allowed;
+  transform: none;
+  border-color: rgba(250, 247, 243, 0.3);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.newsletter-cta-button:disabled:hover {
+  transform: none;
+  background: rgba(250, 247, 243, 0.3) !important;
+}
+
+.newsletter-cta-button:disabled::before {
+  display: none;
+}
+
+/* ===========================================
+   CONTENT SECTION - REFINED
+   =========================================== */
+
+.newsletter-content-column {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  order: 1;
+}
+
+.newsletter-content {
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.newsletter-title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+  font-weight: 700;
+  color: var(--light-cream);
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  position: relative;
+}
+
+/* Enhanced glow effect for title */
+.newsletter-title::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 165, 165, 0.06) 0%,
+    rgba(217, 165, 165, 0.03) 30%,
+    rgba(217, 165, 165, 0.01) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+  animation: titleGlow 4s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.newsletter-subtitle {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  font-style: italic;
+  color: var(--antique-pink);
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+
+/* Desktop large */
+@media (min-width: 1024px) {
+  .newsletter-container {
+    gap: 60px;
+    max-width: 650px;
+    padding: 0 20px;
+  }
+  
+  .newsletter-form {
+    gap: 28px;
+  }
+  
+  .newsletter-input-underlined {
+    padding: 24px 0 18px 0;
+    font-size: 1.2rem;
+  }
+  
+  .newsletter-cta-button {
+    padding: clamp(18px, 2.5vw, 22px) clamp(36px, 5vw, 44px);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+  }
+}
+
+/* Tablet */
+@media (max-width: 1023px) {
+  .newsletter-container {
+    gap: 50px;
+    max-width: 550px;
+    padding: 0 20px;
+  }
+  
+  .newsletter-form {
+    gap: 26px;
+  }
+  
+  .newsletter-input-underlined {
+    padding: 22px 0 16px 0;
+    font-size: 1.1rem;
+  }
+  
+  .newsletter-cta-button {
+    padding: clamp(17px, 2.3vw, 20px) clamp(34px, 4.5vw, 40px);
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-newsletter {
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .newsletter-container {
+    gap: 40px;
+    max-width: 450px;
+    padding: 0 16px;
+    margin: 0;
+  }
+
+  .newsletter-form {
+    gap: 22px;
+  }
+
+  .newsletter-input-underlined {
+    padding: 20px 0 14px 0;
+    font-size: 1rem;
+  }
+
+  .newsletter-input-underlined::placeholder {
+    font-size: 1rem;
+  }
+
+  .newsletter-cta-button {
+    padding: clamp(16px, 3vw, 18px) clamp(28px, 6vw, 36px);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    border-radius: 50px; /* Keep rounded on mobile */
+  }
+
+  .newsletter-title {
+    font-size: clamp(2.4rem, 7vw, 3.5rem);
+    margin: 0;
+    padding: 0;
+  }
+
+  .newsletter-subtitle {
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Mobile small */
+@media (max-width: 480px) {
+  .newsletter-container {
+    gap: 35px;
+    padding: 0 12px;
+  }
+
+  .newsletter-form {
+    gap: 20px;
+  }
+
+  .newsletter-input-underlined {
+    padding: 18px 0 12px 0;
+    font-size: 0.95rem;
+  }
+
+  .newsletter-input-underlined::placeholder {
+    font-size: 0.95rem;
+  }
+
+  .newsletter-cta-button {
+    padding: clamp(15px, 3.5vw, 17px) clamp(26px, 7vw, 32px);
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  }
+}
+
+/* ===========================================
+   SPACING MODIFIERS - HEIGHT CONTROL
+   =========================================== */
+
+/* Remove all spacing modifiers - everything is zero */
+.hero-newsletter.bottom-spaced,
+.hero-newsletter.small-bottom,
+.hero-newsletter.medium-bottom,
+.hero-newsletter.large-bottom,
+.hero-newsletter.content-sized,
+.hero-newsletter.custom-spacing {
+  padding: 0;
+  margin: 0;
+}
+
+/* Height alternatives */
+.hero-newsletter.fixed-height {
+  height: 80vh;
+  min-height: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-newsletter.compact {
+  min-height: 70vh;
+  padding: 0;
+  margin: 0;
+}
+
+/* Mobile spacing adjustments - all removed */
+@media (max-width: 768px) {
+  .hero-newsletter.bottom-spaced,
+  .hero-newsletter.large-bottom,
+  .hero-newsletter.content-sized,
+  .hero-newsletter.custom-spacing {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY & PERFORMANCE
+   =========================================== */
+
+/* Focus styles for better accessibility - UPDATED */
+.newsletter-input-underlined:focus-visible {
+  outline: none; /* Remove outline, keep only underline */
+  box-shadow: none; /* Remove any box shadow */
+}
+
+.newsletter-cta-button:focus-visible {
+  outline: 2px solid var(--antique-pink);
+  outline-offset: 3px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .newsletter-input-underlined,
+  .newsletter-input-underlined::placeholder,
+  .newsletter-input-wrapper::after,
+  .newsletter-cta-button,
+  .button-text,
+  .button-ripple,
+  .newsletter-title::before {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .newsletter-cta-button:hover,
+  .newsletter-cta-button:active,
+  .newsletter-input-underlined:focus {
+    transform: none !important;
+  }
+
+  .newsletter-cta-button::before,
+  .newsletter-title::before {
+    display: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .newsletter-input-underlined {
+    border-bottom: 3px solid rgba(255, 255, 255, 0.8);
+    color: white;
+  }
+
+  .newsletter-input-underlined::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .newsletter-input-underlined:focus {
+    border-bottom-color: white;
+  }
+
+  .newsletter-cta-button {
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: black !important;
+  }
+
+  .newsletter-title::before {
+    display: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .hero-newsletter {
+    background: white;
+    color: black;
+    padding: 0;
+    margin: 0;
+  }
+
+  .newsletter-title {
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
+
+  .newsletter-subtitle {
+    color: #666;
+    margin: 0;
+    padding: 0;
+  }
+
+  .newsletter-input-underlined {
+    border-bottom: 2px solid #666;
+    color: black;
+  }
+
+  .newsletter-cta-button {
+    background: #666 !important;
+    color: white !important;
+  }
+
+  .newsletter-title::before,
+  .newsletter-cta-button::before {
+    display: none;
+  }
+}

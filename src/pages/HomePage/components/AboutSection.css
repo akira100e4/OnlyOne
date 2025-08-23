@@ -1,0 +1,1049 @@
+/* src/pages/HomePage/components/AboutSection.css - OPZIONE 2: AGGRESSIVA */
+
+/* ===========================================
+   APPLE-STYLE SCROLL CONTAINER - ULTRA COMPACT
+   =========================================== */
+
+.about-scroll-container {
+  position: relative;
+  min-height: 50vh; /* 🔥 ULTRA-RIDOTTO: da 60vh */
+  height: 50vh; /* 🔥 ULTRA-RIDOTTO: da 60vh */
+  overflow: hidden;
+  background: transparent;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+}
+
+.about-scroll-wrapper {
+  height: 50vh; /* 🔥 ULTRA-RIDOTTO: da 60vh */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  
+  /* 🔥 FIX: Stabilizza lo scroll-snap */
+  scroll-padding: 0;
+  scroll-margin: 0;
+}
+
+/* Hide scrollbar */
+.about-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.about-scroll-wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===========================================
+   FIXED BLOCKS - ULTRA COMPACT
+   =========================================== */
+
+.about-block {
+  height: 50vh; /* 🔥 ULTRA-RIDOTTO: da 60vh */
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  
+  /* 🔥 FIX: Layout stabile senza transform sul container */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* 🔥 CAMBIO: da flex-start a center per riempire meglio */
+  padding-top: 1vh; /* 🔥 ULTRA-RIDOTTO: da 2vh */
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0; /* 🔥 ELIMINATO: Spazio inferiore completamente rimosso */
+  margin: 0;
+}
+
+/* 🔥 FIX: Stati applicati solo al CONTENUTO, non al container */
+.about-block__content {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+  padding: 16px 16px 0px 16px; /* 🔥 PADDING BOTTOM ELIMINATO */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 🔥 CAMBIO: da flex-start a center */
+  align-items: center;
+  margin: 0;
+  
+  /* 🔥 ANIMAZIONI SOLO SUL CONTENUTO */
+  opacity: 0.3;
+  transform: translateY(15px); /* 🔥 AGGRESSIVO: Ridotto movimento */
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* 🔥 Transizioni più veloci */
+}
+
+/* Stati attivi - SOLO contenuto */
+.about-block__content.content-active,
+.about-block.block-active .about-block__content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stati di uscita - SOLO contenuto */
+.about-block.block-exit .about-block__content {
+  opacity: 0.1;
+  transform: translateY(-8px);
+}
+
+/* Stati di entrata - SOLO contenuto */
+.about-block.block-enter .about-block__content {
+  opacity: 0.2;
+  transform: translateY(20px);
+}
+
+/* ===========================================
+   TYPOGRAPHY - FONT SIZE REDUCED 10-15%
+   =========================================== */
+
+.about-block__main-title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(2.5rem, 5.2vw, 4.7rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 700;
+  color: var(--light-cream);
+  line-height: 1.1; /* 🔥 Line-height più compatto */
+  margin: 0 0 16px 0; /* 🔥 AGGRESSIVO: Margin ridotto */
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.about-block__section-title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(2.1rem, 4.3vw, 3.2rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 600;
+  color: var(--antique-pink);
+  margin: 0 0 16px 0; /* 🔥 AGGRESSIVO: Margin ridotto */
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.about-block__section-title--centered {
+  text-align: center;
+}
+
+.about-block__manifesto,
+.about-block__text-group {
+  max-width: 700px; /* 🔥 AGGRESSIVO: Ridotto da 750px */
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-block__text {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.1rem, 2.1vw, 1.4rem); /* 🔥 AGGRESSIVO: Ridotto del 12% */
+  font-weight: 400;
+  color: var(--light-cream);
+  line-height: 1.6; /* 🔥 Line-height più compatto */
+  margin: 0 auto 6px auto; /* 🔥 ULTRA-RIDOTTO: da 12px */
+  opacity: 0.9;
+  letter-spacing: 0.01em;
+  max-width: 700px;
+  text-align: center;
+}
+
+.about-block__text--emphasis {
+  font-style: italic;
+  color: var(--antique-pink);
+  opacity: 1;
+  font-weight: 500;
+  margin-top: 8px; /* 🔥 ULTRA-RIDOTTO: da 14px */
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+}
+
+/* ===========================================
+   CARDS - ULTRA COMPACT
+   =========================================== */
+
+.about-block__cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; /* 🔥 AGGRESSIVO: Ridotto da 28px */
+  margin: 16px auto 0 auto; /* 🔥 AGGRESSIVO: Margin ridotto */
+  max-width: 900px; /* 🔥 AGGRESSIVO: Ridotto da 1000px */
+  width: 100%;
+}
+
+.about-block__card {
+  background: rgba(250, 247, 243, 0.05);
+  border: 1px solid rgba(250, 247, 243, 0.15);
+  border-radius: 16px; /* 🔥 AGGRESSIVO: Ridotto da 20px */
+  padding: 18px 14px; /* 🔥 AGGRESSIVO: Ultra-ridotto */
+  text-align: center;
+  backdrop-filter: blur(12px);
+  
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transform: scale(1);
+  
+  min-height: 120px; /* 🔥 AGGRESSIVO: Ridotto da 160px */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-block__card:hover {
+  transform: scale(1.02) translateY(-3px); /* 🔥 Movimento ridotto */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(250, 247, 243, 0.08);
+  border-color: rgba(217, 165, 165, 0.3);
+}
+
+.about-block__card-title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.2rem, 2vw, 1.5rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 600;
+  color: var(--antique-pink);
+  margin: 0 0 8px 0; /* 🔥 AGGRESSIVO: Margin ridotto */
+  letter-spacing: 0.3px;
+}
+
+.about-block__card-description {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 400;
+  color: var(--light-cream);
+  line-height: 1.5; /* 🔥 Line-height più compatto */
+  margin: 0;
+  opacity: 0.85;
+  text-align: center;
+}
+
+/* ===========================================
+   CTA - COMPACT
+   =========================================== */
+
+.about-block__cta-title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(2.4rem, 4.3vw, 3.6rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 600;
+  color: var(--light-cream);
+  margin: 0 0 10px 0; /* 🔥 AGGRESSIVO: Margin ridotto */
+  letter-spacing: -0.01em;
+  line-height: 1.1; /* 🔥 Line-height più compatto */
+  text-align: center;
+}
+
+.about-block__cta-subtitle {
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 400;
+  color: var(--antique-pink);
+  margin: 0 0 0 0; /* 🔥 CTA: Margin bottom completamente eliminato */
+  font-style: italic;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.about-block__cta-button {
+  background: var(--antique-pink) !important;
+  color: var(--carbon-black) !important;
+  border: 2px solid var(--antique-pink);
+  font-family: 'Libre Bodoni', serif;
+  font-size: clamp(0.95rem, 1.7vw, 1.2rem); /* 🔥 AGGRESSIVO: Ridotto del 15% */
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: clamp(16px, 2.5vw, 22px) clamp(40px, 6vw, 60px); /* 🔥 Padding ridotto */
+  border-radius: 40px; /* 🔥 Border-radius ridotto */
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 24px rgba(217, 165, 165, 0.3), /* 🔥 Shadow ridotte */
+    0 3px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-block__cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.about-block__cta-button:hover::before {
+  left: 100%;
+}
+
+.about-block__cta-button:hover {
+  background: var(--light-cream) !important;
+  color: var(--carbon-black) !important;
+  border-color: var(--light-cream);
+  transform: scale(1.03) translateY(-3px); /* 🔥 Movimento ridotto */
+  box-shadow: 
+    0 12px 36px rgba(217, 165, 165, 0.4),
+    0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+.about-block__cta-button:active {
+  transform: scale(1.01) translateY(-1px);
+}
+
+/* ===========================================
+   RESPONSIVE - ULTRA AGGRESSIVE
+   =========================================== */
+
+@media (max-width: 1024px) {
+  .about-scroll-container {
+    height: 55vh; /* 🔥 AGGRESSIVO: Tablet ultra-compact */
+  }
+  
+  .about-scroll-wrapper {
+    height: 45vh; /* 🔥 ULTRA-RIDOTTO */
+  }
+  
+  .about-block {
+    height: 55vh;
+    padding-top: 2vh;
+    padding-bottom: 0; /* 🔥 TABLET: Spazio eliminato */
+  }
+  
+  .about-block__content {
+    max-width: 650px;
+    padding: 14px 12px 4px 12px; /* 🔥 TABLET: Padding top aumentato */
+  }
+  
+  .about-block__cards-grid {
+    gap: 16px;
+    margin-top: 14px;
+  }
+  
+  .about-block__card {
+    padding: 16px 12px;
+    min-height: 110px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-scroll-container {
+    height: 50vh; /* 🔥 AGGRESSIVO: Mobile ultra-compact */
+  }
+  
+  .about-scroll-wrapper {
+    height: 40vh; /* 🔥 ULTRA-RIDOTTO */
+  }
+  
+  .about-block {
+    height: 50vh;
+    padding-top: 1.5vh;
+    padding-bottom: 0; /* 🔥 MOBILE: Spazio eliminato */
+  }
+  
+  .about-block__content {
+    padding: 12px 10px 2px 10px; /* 🔥 MOBILE: Padding top aumentato */
+  }
+  
+  .about-block__cards-grid {
+    grid-template-columns: 1fr; /* 🔥 Single column su mobile */
+    gap: 12px;
+    margin-top: 12px;
+  }
+  
+  .about-block__card {
+    padding: 16px 16px;
+    text-align: center;
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-scroll-container {
+    height: 45vh; /* 🔥 AGGRESSIVO: Mobile piccolo ultra-compact */
+  }
+  
+  .about-scroll-wrapper {
+    height: 35vh; /* 🔥 ULTRA-RIDOTTO */
+  }
+  
+  .about-block {
+    height: 45vh;
+    padding-top: 1vh;
+    padding-bottom: 0; /* 🔥 MOBILE PICCOLO: Spazio eliminato */
+  }
+  
+  .about-block__content {
+    padding: 10px 8px 2px 8px; /* 🔥 MOBILE PICCOLO: Padding top aumentato */
+  }
+  
+  .about-block__card {
+    padding: 14px 12px;
+    border-radius: 12px;
+    min-height: 80px; /* 🔥 Ultra-ridotto */
+  }
+  
+  .about-block__cta-button {
+    width: 100%;
+    max-width: 260px;
+  }
+}
+
+/* ===========================================
+   PERFORMANCE & ACCESSIBILITY - FIXED
+   =========================================== */
+
+.about-block__content {
+  will-change: transform, opacity;
+}
+
+.about-block__card,
+.about-block__cta-button {
+  will-change: transform;
+}
+
+@supports (scroll-snap-stop: always) {
+  .about-block {
+    scroll-snap-stop: always;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .about-scroll-wrapper {
+    scroll-behavior: auto;
+  }
+  
+  .about-block__content {
+    transition: opacity 0.3s ease;
+    transform: none !important;
+  }
+  
+  .about-block__card,
+  .about-block__cta-button {
+    transition: none;
+  }
+  
+  .about-block__cta-button::before {
+    display: none;
+  }
+}
+
+/* ===========================================
+   DEBUG - SCROLL STATE INDICATOR
+   =========================================== */
+
+.scroll-debug {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
+}
+
+.about-scroll-container.is-scrolling .scroll-debug {
+  border-left: 4px solid #ff6b35;
+}
+
+.about-scroll-container.scroll-idle .scroll-debug {
+  border-left: 4px solid #4caf50;
+}
+
+/* ===========================================
+   🔥 ANIMAZIONI MIRATE PER FRASI CHIAVE
+   =========================================== */
+
+/* 1. HIGHLIGHT GLOW - Breathing Loop Continuativo */
+.highlight-glow {
+  position: relative;
+  display: inline-block;
+  will-change: transform, opacity;
+  transition: opacity 0.5s ease;
+  transform-origin: center;
+  /* 🔥 TESTO PIÙ GRANDE */
+  font-size: 1.08em;
+  font-weight: 520;
+  line-height: 1.5;
+}
+
+.highlight-glow.animate {
+  animation: highlightBreathingLoop 3.5s ease-in-out infinite;
+}
+
+@keyframes highlightBreathingLoop {
+  0% {
+    transform: scale(1.02) translateY(0);
+    color: rgba(217, 165, 165, 0.9);
+    text-shadow: 
+      0 0 6px rgba(217, 165, 165, 0.25),
+      0 1px 2px rgba(0, 0, 0, 0.03);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.04) translateY(-1px);
+    color: rgba(217, 165, 165, 0.95);
+    text-shadow: 
+      0 0 10px rgba(217, 165, 165, 0.35),
+      0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    transform: scale(1.06) translateY(-2px);
+    color: var(--antique-pink);
+    text-shadow: 
+      0 0 16px rgba(217, 165, 165, 0.5),
+      0 0 8px rgba(217, 165, 165, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  75% {
+    transform: scale(1.04) translateY(-1px);
+    color: rgba(217, 165, 165, 0.95);
+    text-shadow: 
+      0 0 10px rgba(217, 165, 165, 0.35),
+      0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  100% {
+    transform: scale(1.02) translateY(0);
+    color: rgba(217, 165, 165, 0.9);
+    text-shadow: 
+      0 0 6px rgba(217, 165, 165, 0.25),
+      0 1px 2px rgba(0, 0, 0, 0.03);
+    opacity: 1;
+  }
+}
+
+/* 🔥 RESPONSIVE per highlight-glow continuativo */
+@media (max-width: 1024px) {
+  .highlight-glow.animate {
+    animation-duration: 3s;
+  }
+}
+
+@media (max-width: 768px) {
+  .highlight-glow.animate {
+    animation-duration: 2.5s;
+  }
+  
+  @keyframes highlightBreathingLoop {
+    0%, 100% {
+      transform: scale(1.02);
+      color: rgba(217, 165, 165, 0.9);
+      text-shadow: 0 0 6px rgba(217, 165, 165, 0.25);
+    }
+    50% {
+      transform: scale(1.05);
+      color: var(--antique-pink);
+      text-shadow: 0 0 12px rgba(217, 165, 165, 0.4);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .highlight-glow.animate {
+    animation-duration: 2s;
+  }
+}
+
+/* 2. FLASH UNDERLINE - Underline con flash luminoso */
+.flash-underline {
+  position: relative;
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.flash-underline.animate {
+  animation: flashUnderline 1.2s ease-out forwards;
+}
+
+.flash-underline.animate::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--antique-pink) 20%,
+    rgba(250, 247, 243, 0.8) 50%,
+    var(--antique-pink) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  animation: flashUnderlineBar 1.2s ease-out forwards;
+}
+
+@keyframes flashUnderline {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-1px);
+    text-shadow: 0 0 8px rgba(217, 165, 165, 0.4);
+  }
+  100% {
+    transform: translateY(0);
+    text-shadow: 0 0 4px rgba(217, 165, 165, 0.2);
+  }
+}
+
+@keyframes flashUnderlineBar {
+  0% {
+    background-position: -100% 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    background-position: 100% 0;
+    opacity: 1;
+  }
+  100% {
+    background-position: 100% 0;
+    opacity: 0.7;
+  }
+}
+
+
+/* 3. SIGNATURE SWEEP - Fade semplice + linea SVG */
+.signature-sweep {
+  position: relative;
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.signature-sweep.animate {
+  animation: signatureFadeIn 1.5s ease-out forwards;
+}
+
+.signature-sweep.animate::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 3"><path d="M0,1.5 Q25,0 50,1.5 T100,1.5" stroke="%23D9A5A5" stroke-width="2" fill="none"/></svg>') no-repeat;
+  background-size: 100% 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  animation: signatureLineDraw 1.8s ease-out 0.6s forwards;
+}
+
+@keyframes signatureFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    color: var(--antique-pink);
+    text-shadow: 0 0 5px rgba(217, 165, 165, 0.2);
+  }
+}
+
+@keyframes signatureLineDraw {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+}
+
+/* 4. TYPEWRITER EFFECT - Scrittura lettera per lettera (3.5s) */
+.typewriter-effect {
+  display: inline-block;
+  will-change: transform, opacity;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--antique-pink);
+  width: 0;
+}
+
+.typewriter-effect.animate {
+  animation: 
+    typewriterText 3.5s steps(50) forwards,
+    typewriterCursor 0.8s step-end infinite;
+}
+
+@keyframes typewriterText {
+  0% {
+    width: 0;
+  }
+  85% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+    border-right-color: transparent;
+  }
+}
+
+@keyframes typewriterCursor {
+  0%, 50% {
+    border-right-color: var(--antique-pink);
+  }
+  51%, 100% {
+    border-right-color: transparent;
+  }
+}
+
+/* Fallback per mobile - typewriter semplificato */
+@media (max-width: 768px) {
+  .typewriter-effect.animate {
+    animation: typewriterFade 1.5s ease-out forwards;
+    white-space: normal;
+    width: auto;
+    border-right: none;
+  }
+  
+  @keyframes typewriterFade {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* 5. BACKGROUND ACCENT - Effetto light e discreto */
+.background-accent {
+  position: relative;
+  display: inline-block;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+.background-accent.animate {
+  animation: backgroundAccentLight 2s ease-out forwards;
+}
+
+.background-accent.animate::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -2px;
+  right: -2px;
+  bottom: -1px;
+  background: linear-gradient(
+    135deg,
+    rgba(217, 165, 165, 0.08) 0%,
+    rgba(250, 247, 243, 0.05) 50%,
+    rgba(217, 165, 165, 0.06) 100%
+  );
+  border-radius: 4px;
+  z-index: -1;
+  transform: scale(0.95);
+  opacity: 0;
+  animation: backgroundAccentBgLight 2s ease-out forwards;
+}
+
+@keyframes backgroundAccentLight {
+  0% {
+    transform: translateY(0);
+    color: inherit;
+  }
+  50% {
+    transform: translateY(-0.5px);
+    color: rgba(217, 165, 165, 0.9);
+    text-shadow: 0 0 3px rgba(217, 165, 165, 0.1);
+  }
+  100% {
+    transform: translateY(0);
+    color: rgba(217, 165, 165, 0.85);
+    text-shadow: 0 0 2px rgba(217, 165, 165, 0.08);
+  }
+}
+
+@keyframes backgroundAccentBgLight {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.02);
+    opacity: 0.3;
+  }
+  70% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+}
+
+/* ===========================================
+   OTTIMIZZAZIONI PERFORMANCE
+   =========================================== */
+
+.highlight-glow,
+.flash-underline,
+.signature-sweep,
+.typewriter-effect,
+.background-accent {
+  will-change: transform, opacity;
+}
+
+.highlight-glow.animate,
+.flash-underline.animate,
+.signature-sweep.animate,
+.typewriter-effect.animate,
+.background-accent.animate {
+  will-change: transform, opacity, color, text-shadow;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+
+@media (max-width: 1024px) {
+  .highlight-glow.animate {
+    animation-duration: 3s;
+  }
+  
+  .flash-underline.animate {
+    animation-duration: 1.5s;
+  }
+  
+  .flash-underline.animate::after {
+    animation-duration: 1.5s;
+    animation-delay: 0.3s;
+  }
+  
+  .signature-sweep.animate {
+    animation-duration: 1.2s;
+  }
+  
+  .signature-sweep.animate::after {
+    animation-duration: 1s;
+    animation-delay: 0.4s;
+  }
+  
+  .typewriter-effect.animate {
+    animation-duration: 3s;
+  }
+  
+  .background-accent.animate {
+    animation-duration: 1.8s;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Riduzione intensità effetti su mobile */
+  .highlight-glow.animate {
+    animation-duration: 2.5s;
+  }
+  
+  .flash-underline.animate {
+    animation-duration: 1.2s;
+  }
+  
+  .flash-underline.animate::after {
+    animation-duration: 1.2s;
+    animation-delay: 0.2s;
+    height: 1px;
+    bottom: -1px;
+  }
+  
+  .signature-sweep.animate {
+    animation-duration: 1s;
+  }
+  
+  .signature-sweep.animate::after {
+    height: 2px;
+    bottom: -2px;
+    animation-duration: 0.8s;
+    animation-delay: 0.3s;
+  }
+  
+  /* Typewriter diventa semplice fade su mobile */
+  .typewriter-effect {
+    white-space: normal;
+    border-right: none;
+    width: auto;
+  }
+  
+  .background-accent.animate::before {
+    border-radius: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ulteriore semplificazione su schermi molto piccoli */
+  .highlight-glow.animate {
+    animation: highlightGlowSimple 2s ease-out forwards;
+  }
+  
+  @keyframes highlightGlowSimple {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      text-shadow: 0 0 10px rgba(217, 165, 165, 0.5);
+      color: var(--antique-pink);
+    }
+    100% {
+      text-shadow: 0 0 5px rgba(217, 165, 165, 0.2);
+      color: rgba(250, 247, 243, 0.95);
+      opacity: 0.95;
+    }
+  }
+  
+  .flash-underline.animate {
+    animation-duration: 1s;
+  }
+  
+  .flash-underline.animate::after {
+    animation-duration: 1s;
+    animation-delay: 0.2s;
+  }
+  
+  .signature-sweep.animate {
+    animation-duration: 0.8s;
+  }
+  
+  .signature-sweep.animate::after {
+    animation-duration: 0.6s;
+    animation-delay: 0.2s;
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY & REDUCED MOTION
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight-glow.animate,
+  .flash-underline.animate,
+  .signature-sweep.animate,
+  .typewriter-effect.animate,
+  .background-accent.animate {
+    animation: textHighlightSimple 0.5s ease-out forwards !important;
+  }
+  
+  .highlight-glow.animate::after,
+  .flash-underline.animate::after,
+  .signature-sweep.animate::after,
+  .background-accent.animate::before {
+    display: none !important;
+  }
+  
+  @keyframes textHighlightSimple {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      color: var(--antique-pink);
+    }
+    100% {
+      color: var(--antique-pink);
+      opacity: 1;
+    }
+  }
+  
+  .typewriter-effect {
+    white-space: normal !important;
+    width: auto !important;
+    border-right: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* ===========================================
+   HIGH CONTRAST MODE
+   =========================================== */
+
+@media (prefers-contrast: high) {
+  .highlight-glow.animate,
+  .flash-underline.animate,
+  .signature-sweep.animate,
+  .background-accent.animate {
+    color: white !important;
+    text-shadow: none !important;
+  }
+  
+  .flash-underline.animate::after,
+  .signature-sweep.animate::after {
+    background: white !important;
+  }
+  
+  .background-accent.animate::before {
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  .typewriter-effect {
+    border-right-color: white !important;
+  }
+}
+
+/* ===========================================
+   FALLBACK PER BROWSER SENZA SUPPORTO CSS AVANZATO
+   =========================================== */
+
+@supports not (animation: none) {
+  .highlight-glow.animate,
+  .flash-underline.animate,
+  .signature-sweep.animate,
+  .typewriter-effect.animate,
+  .background-accent.animate {
+    color: var(--antique-pink) !important;
+    font-weight: 500 !important;
+  }
+}
+
+/* ===========================================
+   PRINT STYLES
+   =========================================== */
+
+@media print {
+  .highlight-glow,
+  .flash-underline,
+  .signature-sweep,
+  .typewriter-effect,
+  .background-accent {
+    color: black !important;
+    background: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+  }
+  
+  .highlight-glow::after,
+  .flash-underline::after,
+  .signature-sweep::after,
+  .background-accent::before {
+    display: none !important;
+  }
+  
+  .typewriter-effect {
+    white-space: normal !important;
+    width: auto !important;
+    border-right: none !important;
+  }
+}

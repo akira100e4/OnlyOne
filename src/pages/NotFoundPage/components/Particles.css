@@ -1,0 +1,64 @@
+/* src/pages/NotFoundPage/components/Particles.css - THREE.JS VERSION */
+
+.particles-threejs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particles-threejs canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Performance ottimizzazioni */
+.particles-threejs {
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .particles-threejs {
+    display: none;
+  }
+}
+
+/* Performance per dispositivi mobili */
+@media (max-width: 768px) {
+  .particles-threejs {
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 480px) {
+  .particles-threejs {
+    opacity: 0.6;
+  }
+}
+
+/* Fallback per WebGL non supportato */
+.particles-threejs.webgl-error {
+  display: none;
+}
+
+.particles-threejs.webgl-error::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(217, 165, 165, 0.1) 0%,
+    rgba(217, 165, 165, 0.05) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+}

@@ -1,0 +1,241 @@
+/* src/App.css - OTTIMIZZATO PER REACT ROUTER */
+
+.App {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ===========================================
+   ROUTER TRANSITIONS - SMOOTH PAGE CHANGES
+   =========================================== */
+
+/* Transizioni fluide tra pagine */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+/* ===========================================
+   GLOBAL LAYOUT FIXES
+   =========================================== */
+
+/* Assicura che ogni pagina parta da capo */
+.App > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix per scroll position tra pagine */
+.App {
+  scroll-behavior: smooth;
+}
+
+/* ===========================================
+   RESPONSIVE CONTAINER GLOBAL
+   =========================================== */
+
+/* Container globale per consistenza */
+.app-container {
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Hardware acceleration per smooth transitions */
+.App,
+.App > * {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+/* ===========================================
+   ACCESSIBILITY IMPROVEMENTS
+   =========================================== */
+
+/* Focus management tra route changes */
+.App:focus-within {
+  outline: none;
+}
+
+/* Screen reader announcements per route changes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===========================================
+   LOADING STATES GLOBAL
+   =========================================== */
+
+/* Loading state per lazy loading future */
+.route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--carbon-black);
+  color: var(--light-cream);
+}
+
+.route-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(217, 165, 165, 0.2);
+  border-top: 3px solid var(--antique-pink);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===========================================
+   ERROR BOUNDARIES STYLING
+   =========================================== */
+
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px;
+  text-align: center;
+  background: var(--carbon-black);
+  color: var(--light-cream);
+}
+
+.error-boundary__title {
+  font-family: 'Libre Bodoni', serif;
+  font-size: 2.5rem;
+  color: var(--antique-pink);
+  margin-bottom: 16px;
+}
+
+.error-boundary__message {
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.error-boundary__button {
+  background: var(--antique-pink);
+  color: var(--carbon-black);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-family: 'Libre Bodoni', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-boundary__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 165, 165, 0.3);
+}
+
+/* ===========================================
+   RESPONSIVE ADJUSTMENTS
+   =========================================== */
+
+@media (max-width: 768px) {
+  .page-transition-enter,
+  .page-transition-exit-active {
+    transform: translateY(10px);
+  }
+  
+  .error-boundary {
+    padding: 20px;
+  }
+  
+  .error-boundary__title {
+    font-size: 2rem;
+  }
+}
+
+/* ===========================================
+   REDUCED MOTION SUPPORT
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-enter-active,
+  .page-transition-exit-active {
+    transition: none;
+  }
+  
+  .page-transition-enter,
+  .page-transition-exit-active {
+    transform: none;
+  }
+  
+  .App {
+    scroll-behavior: auto;
+  }
+  
+  .route-loading-spinner {
+    animation: none;
+    border: 3px solid var(--antique-pink);
+    border-top: 3px solid transparent;
+  }
+}
+
+/* ===========================================
+   PRINT STYLES
+   =========================================== */
+
+@media print {
+  .App {
+    background: white;
+    color: black;
+  }
+  
+  .route-loading,
+  .error-boundary {
+    display: none;
+  }
+}
+
+/* src/App.css */
+
+.app {
+  min-height: 100vh;
+  transition: opacity 0.3s ease;
+}
+
+.app.transitioning {
+  opacity: 0;
+  pointer-events: none;
+}

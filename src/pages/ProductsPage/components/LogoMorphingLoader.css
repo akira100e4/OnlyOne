@@ -1,0 +1,522 @@
+/* src/pages/ProductsPage/components/LogoMorphingLoader.css - LOGO MORPHING ANIMATION */
+
+/* ===========================================
+   LOGO MORPHING LOADER - FULLSCREEN OVERLAY
+   =========================================== */
+
+.logo-morphing-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  
+  /* Performance ottimizzata */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Overlay background */
+.loader-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    var(--light-cream) 0%,
+    rgba(250, 247, 243, 0.95) 50%,
+    rgba(217, 165, 165, 0.1) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ===========================================
+   🎯 LOGO CONTAINER CENTRATO
+   =========================================== */
+
+.logo-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+  z-index: 2;
+  /* 🔥 FIX: Centratura assoluta del container */
+  margin: 0 auto;
+}
+
+/* ===========================================
+   🔥 MORPHING EFFECTS - LOGO PRINCIPALE
+   =========================================== */
+
+.logo-morph {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px; /* 🔥 FIX: Width esplicita per centratura perfetta */
+  height: auto;
+  transform-origin: center;
+  /* 🔥 FIX: Centratura assoluta */
+  margin: 0 auto;
+}
+
+.logo-main {
+  width: 180px; /* 🔥 AUMENTATO: da 120px a 180px */
+  height: auto;
+  position: relative;
+  z-index: 3;
+  filter: brightness(0.8);
+  
+  /* 🔥 FIX: Centratura perfetta dell'immagine */
+  display: block;
+  margin: 0 auto;
+  
+  /* Animazione morphing principale */
+  animation: logoMainMorph 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center center;
+}
+
+/* 🎨 MORPHING KEYFRAMES - LOGO PRINCIPALE - FIX ROTAZIONE */
+@keyframes logoMainMorph {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(0.8) saturate(1);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.08) rotate(0deg); /* 🔥 FIX: Rimossa rotazione */
+    filter: brightness(0.9) saturate(1.2);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(0.95) rotate(0deg); /* 🔥 FIX: Rimossa rotazione */
+    filter: brightness(1.1) saturate(0.8);
+    opacity: 0.95;
+  }
+  75% {
+    transform: scale(1.05) rotate(0deg); /* 🔥 FIX: Rimossa rotazione */
+    filter: brightness(0.7) saturate(1.3);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(0.8) saturate(1);
+    opacity: 1;
+  }
+}
+
+/* ===========================================
+   ✨ EFFETTI MORPHING SOVRAPPOSTI
+   =========================================== */
+
+.morph-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Effetto Scale Pulse */
+.morph-scale {
+  width: 210px; /* 🔥 AGGIORNATO: Proporzionale al logo più grande */
+  height: 210px;
+  background: radial-gradient(
+    circle,
+    rgba(217, 165, 165, 0.2) 0%,
+    rgba(217, 165, 165, 0.1) 40%,
+    transparent 70%
+  );
+  animation: morphScale 2.5s ease-in-out infinite;
+}
+
+@keyframes morphScale {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.6;
+  }
+}
+
+/* Effetto Pulse Glow */
+.morph-pulse {
+  width: 280px; /* 🔥 AGGIORNATO: Proporzionale al logo più grande */
+  height: 280px;
+  background: radial-gradient(
+    circle,
+    rgba(217, 165, 165, 0.15) 0%,
+    rgba(217, 165, 165, 0.05) 30%,
+    transparent 60%
+  );
+  animation: morphPulse 2.5s ease-in-out infinite 0.5s;
+}
+
+@keyframes morphPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.4;
+  }
+}
+
+/* Effetto Particles */
+.morph-particles {
+  width: 240px; /* 🔥 AGGIORNATO: Proporzionale al logo più grande */
+  height: 240px;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(217, 165, 165, 0.3) 2px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(217, 165, 165, 0.3) 1px, transparent 1px),
+    radial-gradient(circle at 60% 20%, rgba(217, 165, 165, 0.2) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 30% 80%, rgba(217, 165, 165, 0.2) 1px, transparent 1px);
+  animation: morphParticles 2.5s linear infinite 1s;
+}
+
+@keyframes morphParticles {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.9);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* ===========================================
+   🌟 GLOW E RIPPLE EFFECTS
+   =========================================== */
+
+.logo-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(
+    circle,
+    rgba(217, 165, 165, 0.1) 0%,
+    rgba(217, 165, 165, 0.05) 40%,
+    transparent 70%
+  );
+  animation: logoGlow 4s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+.logo-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border: 2px solid rgba(217, 165, 165, 0.2);
+  border-radius: 50%;
+  animation: logoRipple 3s ease-out infinite;
+}
+
+@keyframes logoRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ===========================================
+   📊 LOADING PROGRESS INDICATOR - FIXED CENTERING
+   =========================================== */
+
+.loading-progress {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateZ(0); /* 🔥 FIX: Centratura + GPU acceleration */
+  width: 200px;
+  height: 2px;
+  background: rgba(217, 165, 165, 0.2);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(217, 165, 165, 0.8) 0%,
+    rgba(217, 165, 165, 1) 50%,
+    rgba(217, 165, 165, 0.8) 100%
+  );
+  width: 0%;
+  animation: progressFill 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  border-radius: 1px;
+}
+
+@keyframes progressFill {
+  0% {
+    width: 0%;
+    transform: translateX(-100%);
+  }
+  100% {
+    width: 100%;
+    transform: translateX(0%);
+  }
+}
+
+/* ===========================================
+   🎭 FASI DELL'ANIMAZIONE
+   =========================================== */
+
+/* Fase 1: Morphing (default) */
+.logo-morphing-loader.morph {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Fase 2: Dissolve */
+.logo-morphing-loader.dissolve {
+  animation: loaderDissolve 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.logo-morphing-loader.dissolve .logo-main {
+  animation: logoDissolve 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.logo-morphing-loader.dissolve .morph-effect,
+.logo-morphing-loader.dissolve .logo-glow,
+.logo-morphing-loader.dissolve .logo-ripple {
+  animation: effectsDissolve 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Fase 3: Complete - Stato finale istantaneo */
+.logo-morphing-loader.complete {
+  /* 🔥 FIX: Nessuna seconda dissolvenza */
+  animation: none;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.1);
+}
+
+/* ===========================================
+   🎬 KEYFRAMES TRANSIZIONI FINALI
+   =========================================== */
+
+@keyframes loaderDissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0; /* 🔥 FIX: Fade diretto a 0, non a 0.3 */
+    transform: scale(1.1);
+  }
+}
+
+@keyframes logoDissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(0.8);
+  }
+  100% {
+    opacity: 0; /* 🔥 FIX: Allinea a fade unico del wrapper */
+    transform: scale(1.3) rotate(0deg); /* 🔥 FIX: Rimossa rotazione finale */
+    filter: brightness(1.5) blur(2px);
+  }
+}
+
+@keyframes effectsDissolve {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+/* 🔥 FIX: loaderExit rimossa - non più utilizzata */
+
+/* ===========================================
+   📱 RESPONSIVE DESIGN - FIXED CENTERING
+   =========================================== */
+
+@media (max-width: 768px) {
+  .logo-container {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto; /* 🔥 FIX: Centratura responsive */
+  }
+  
+  .logo-morph {
+    width: 150px; /* 🔥 FIX: Width responsive */
+    margin: 0 auto;
+  }
+  
+  .logo-main {
+    width: 150px; /* 🔥 AGGIORNATO: Più grande anche su mobile */
+    margin: 0 auto; /* 🔥 FIX: Centratura responsive */
+  }
+  
+  .morph-scale {
+    width: 180px; /* 🔥 AGGIORNATO: Proporzionale */
+    height: 180px;
+  }
+  
+  .morph-pulse {
+    width: 220px; /* 🔥 AGGIORNATO: Proporzionale */
+    height: 220px;
+  }
+  
+  .morph-particles {
+    width: 200px; /* 🔥 AGGIORNATO: Proporzionale */
+    height: 200px;
+  }
+  
+  .logo-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .logo-ripple {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .loading-progress {
+    bottom: 100px; /* 🔥 FIX: Posizione responsive vicina al logo */
+    width: 160px;
+    left: 50%;
+    transform: translateX(-50%) translateZ(0); /* 🔥 FIX: Centratura perfetta responsive */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto; /* 🔥 FIX: Centratura responsive */
+  }
+  
+  .logo-morph {
+    width: 120px; /* 🔥 FIX: Width responsive */
+    margin: 0 auto;
+  }
+  
+  .logo-main {
+    width: 120px; /* 🔥 AGGIORNATO: Più grande anche su mobile piccolo */
+    margin: 0 auto; /* 🔥 FIX: Centratura responsive */
+  }
+  
+  .loading-progress {
+    bottom: 90px; /* 🔥 FIX: Posizione responsive vicina al logo su mobile piccolo */
+    width: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateZ(0); /* 🔥 FIX: Centratura perfetta su mobile piccolo */
+  }
+}
+
+/* ===========================================
+   ♿ ACCESSIBILITY & PERFORMANCE
+   =========================================== */
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .logo-main,
+  .morph-effect,
+  .logo-glow,
+  .logo-ripple,
+  .progress-bar {
+    animation-duration: 0.5s !important;
+    animation-iteration-count: 1 !important;
+  }
+  
+  /* 🔥 FIX: Solo dissolve ha animazione ridotta, complete è istantaneo */
+  .logo-morphing-loader.dissolve { 
+    animation-duration: 0.2s !important; 
+  }
+  .logo-morphing-loader.complete { 
+    animation: none !important; 
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .loader-overlay {
+    background: white;
+  }
+  
+  .logo-main {
+    filter: brightness(0.5);
+  }
+  
+  .morph-effect,
+  .logo-glow {
+    display: none;
+  }
+  
+  .progress-bar {
+    background: #000;
+  }
+}
+
+/* ===========================================
+   🔧 PERFORMANCE OPTIMIZATIONS - TARGETED APPROACH
+   =========================================== */
+
+/* 🔥 FIX: Targeted GPU acceleration instead of wildcard */
+.logo-main,
+.morph-effect,
+.logo-glow,
+.logo-ripple,
+.progress-bar {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Additional GPU acceleration for animated elements */
+.logo-morph,
+.loader-overlay {
+  will-change: transform, opacity;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}

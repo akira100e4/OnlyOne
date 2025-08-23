@@ -1,0 +1,78 @@
+.
+├── README.md
+├── eslint.config.js
+├── index.html
+├── node_modules
+├── scripts
+│   └── generateManifest.js
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── assets
+│   │   └── react.svg
+│   ├── components
+│   │   ├── features
+│   │   ├── layout
+│   │   │   ├── Footer.css
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Header.css
+│   │   │   ├── Header.jsx
+│   │   │   └── Layout.jsx
+│   │   └── ui
+│   │       └── animations
+│   │           ├── HeroAnimations.css
+│   │           └── HeroAnimations.jsx
+│   ├── data
+│   │   ├── navigation.js
+│   │   └── products.js
+│   ├── hooks
+│   │   ├── useBrowserTheme.js
+│   │   ├── useDebouncedScroll.js
+│   │   ├── useFavicon.js
+│   │   ├── useFavorites.js
+│   │   └── useScrollGradient.js
+│   ├── index.css
+│   ├── main.jsx
+│   ├── pages
+│   │   ├── FavoritesPage
+│   │   │   ├── FavoritesPage.css
+│   │   │   ├── FavoritesPage.jsx
+│   │   │   └── components
+│   │   │       ├── EmptyFavorites.css
+│   │   │       ├── EmptyFavorites.jsx
+│   │   │       └── FavoritesGrid.jsx
+│   │   ├── HomePage
+│   │   │   ├── HomePage.css
+│   │   │   ├── HomePage.jsx
+│   │   │   └── components
+│   │   │       ├── AboutSection.css
+│   │   │       ├── AboutSection.jsx
+│   │   │       ├── BachecaSection.css
+│   │   │       ├── BachecaSection.jsx
+│   │   │       ├── ContactSection.css
+│   │   │       ├── ContactSection.jsx
+│   │   │       ├── HeroHome.css
+│   │   │       ├── HeroHome.jsx
+│   │   │       ├── HeroNewsletter.css
+│   │   │       ├── HeroNewsletter.jsx
+│   │   │       ├── HeroSection.css
+│   │   │       └── HeroSection.jsx
+│   │   └── ProductsPage
+│   │       ├── ProductsPage.css
+│   │       ├── ProductsPage.jsx
+│   │       └── components
+│   │           ├── LogoMorphingLoader.css
+│   │           ├── LogoMorphingLoader.jsx
+│   │           ├── ProductDetail.css
+│   │           ├── ProductDetail.jsx
+│   │           ├── ProductsGrid.css
+│   │           └── ProductsGrid.jsx
+│   ├── services
+│   │   ├── api.js
+│   │   └── productService.js
+│   ├── styles
+│   │   └── globals.css
+│   └── utils
+└── vite.config.js
+
+840 directories, 11699 files
