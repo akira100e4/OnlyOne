@@ -1,4 +1,4 @@
-// src/pages/ProductsPage/components/ProductsGrid.jsx - VERSIONE GRAFICHE UNIFICATE
+// src/pages/ProductsPage/components/ProductsGrid.jsx - "1 GRAFICA = 1 CARD"
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Eye } from 'lucide-react';
@@ -9,9 +9,9 @@ const ProductsGrid = () => {
   const navigate = useNavigate();
   
   // Stati principali
-  const [graphics, setGraphics] = useState([]); // Grafiche dal manifest.json
-  const [printifyProducts, setPrintifyProducts] = useState([]); // Prodotti dal backend
-  const [unifiedProducts, setUnifiedProducts] = useState([]); // Prodotti unificati finali
+  const [graphics, setGraphics] = useState([]);
+  const [printifyProducts, setPrintifyProducts] = useState([]);
+  const [unifiedProducts, setUnifiedProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   
   // Stati di caricamento
@@ -37,45 +37,44 @@ const ProductsGrid = () => {
   // --- UTILITY FUNCTIONS ---------------------------------------------------
   const isSafari = () => /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-  // Funzione per estrarre il nome della grafica dal titolo Printify
-  const extractGraphicName = (printifyTitle) => {
-    if (!printifyTitle) return null;
-    
-    // Il formato tipico è: "dragon_sweatshirt_680c4e" o "dragon_tshirt_680c4e"
-    // Vogliamo estrarre "dragon"
-    const parts = printifyTitle.toLowerCase().split('_');
-    if (parts.length >= 2) {
-      // Rimuovi gli ultimi elementi che sono tipo prodotto e ID
-      // Mantieni solo la parte della grafica
-      return parts[0]; // In questo caso "dragon"
-    }
-    
-    // Fallback: cerca corrispondenze nei nostri ID grafiche
-    const lowerTitle = printifyTitle.toLowerCase();
-    return lowerTitle;
+  const normalizeForMatching = (text) => {
+    return text
+      .toLowerCase()
+      .replace(/[_\-\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   };
 
-  // Funzione per creare un ID unico per la grafica unificata
   const createUnifiedId = (graphicId) => `unified_${graphicId}`;
 
   // --- API CALLS -----------------------------------------------------------
   const loadManifest = async () => {
     try {
+      console.log('DEBUG: Loading manifest.json...');
       const response = await fetch('/prodotti/manifest.json');
       if (!response.ok) {
         throw new Error(`Errore caricamento manifest: ${response.status}`);
       }
       const data = await response.json();
-      return data || [];
+      console.log('DEBUG: Manifest loaded, graphics found:', data?.length || 0);
+      
+      // FOCUS TEST: Solo "La Danzatrice delle Ombre" per ora
+      const testGraphics = data.filter(g => 
+        g.id === 'la-danzatrice-delle-ombre' || 
+        g.title.toLowerCase().includes('danzatrice')
+      );
+      
+      console.log('DEBUG: Test graphics found:', testGraphics);
+      return testGraphics;
     } catch (error) {
-      console.error('Errore caricamento manifest.json:', error);
+      console.error('DEBUG: Errore caricamento manifest.json:', error);
       throw error;
     }
   };
 
   const fetchPrintifyCatalog = async () => {
     try {
-      console.log('🔄 Caricamento prodotti Printify dal backend...');
+      console.log('DEBUG: Fetching Printify products from backend...');
       const response = await fetch(`${API_BASE_URL}/catalog?limit=100`);
       
       if (!response.ok) {
@@ -83,88 +82,150 @@ const ProductsGrid = () => {
       }
       
       const data = await response.json();
-      console.log('✅ Prodotti Printify caricati:', data.products?.length || 0);
-      return data.products || [];
+      const products = data.products || [];
+      console.log('DEBUG: Printify products loaded:', products.length);
+      
+      // Mostra solo prodotti che potrebbero matchare "Danzatrice"
+      const relevantProducts = products.filter(p => 
+        p.title.toLowerCase().includes('danzatrice')
+      );
+      console.log('DEBUG: Relevant products for Danzatrice:', relevantProducts.map(p => p.title));
+      
+      return products;
     } catch (error) {
-      console.error('Errore caricamento catalogo Printify:', error);
-      // Non bloccare l'app se Printify non funziona
+      console.error('DEBUG: Error fetching Printify catalog:', error);
       return [];
     }
   };
 
-  // --- PROCESSING FUNCTIONS ------------------------------------------------
+  // --- DATA PROCESSING ---------------------------------------------------
   const unifyProducts = (manifestGraphics, printifyProducts) => {
-    console.log('🔄 Unificazione prodotti...');
-    console.log('Grafiche manifest:', manifestGraphics.length);
-    console.log('Prodotti Printify:', printifyProducts.length);
-
-    const unified = manifestGraphics.map(graphic => {
-      // Trova tutti i prodotti Printify che corrispondono a questa grafica
-      const relatedPrintifyProducts = printifyProducts.filter(product => {
-        const extractedName = extractGraphicName(product.title);
-        return extractedName === graphic.id || 
-               product.title.toLowerCase().includes(graphic.id.toLowerCase());
+    console.log('DEBUG: Starting unification process...');
+    console.log('DEBUG: Manifest graphics:', manifestGraphics.length);
+    console.log('DEBUG: Printify products:', printifyProducts.length);
+    
+    const unified = manifestGraphics.map((graphic) => {
+      console.log(`\nDEBUG: Processing graphic: "${graphic.title}"`);
+      console.log(`DEBUG: Graphic ID: "${graphic.id}"`);
+      
+      // Trova TUTTI i prodotti Printify correlati a questa grafica
+      const relatedProducts = printifyProducts.filter(product => {
+        if (!product.title) return false;
+        
+        const productTitle = normalizeForMatching(product.title);
+        const graphicId = normalizeForMatching(graphic.id);
+        
+        // Estrai le parole chiave dalla grafica
+        const graphicWords = graphicId.split(' ').filter(word => word.length > 2);
+        
+        console.log(`  Testing "${product.title}"`);
+        console.log(`    Normalized: "${productTitle}"`);
+        console.log(`    Graphic words: [${graphicWords.join(', ')}]`);
+        
+        // Match se almeno 2 parole chiave sono presenti
+        const matchingWords = graphicWords.filter(word => 
+          productTitle.includes(word)
+        );
+        
+        const isMatch = matchingWords.length >= 2;
+        console.log(`    Matching words: [${matchingWords.join(', ')}] - ${isMatch ? 'MATCH' : 'NO'}`);
+        
+        return isMatch;
       });
-
-      console.log(`Grafica "${graphic.id}": trovati ${relatedPrintifyProducts.length} prodotti Printify`);
-
-      // Calcola il range di prezzi
+      
+      console.log(`DEBUG: Found ${relatedProducts.length} related products:`);
+      relatedProducts.forEach(p => console.log(`  - ${p.title}`));
+      
+      // Categorizza i prodotti per tipo
+      const productTypes = {
+        tshirt: relatedProducts.filter(p => 
+          p.title.toLowerCase().includes('tshirt') || 
+          p.title.toLowerCase().includes('t-shirt')
+        ),
+        sweatshirt: relatedProducts.filter(p => 
+          p.title.toLowerCase().includes('sweatshirt') ||
+          p.title.toLowerCase().includes('felpa')
+        )
+      };
+      
+      console.log(`DEBUG: Product breakdown:`);
+      console.log(`  T-shirts: ${productTypes.tshirt.length}`);
+      console.log(`  Sweatshirts: ${productTypes.sweatshirt.length}`);
+      
+      // Calcola range prezzi combinato di TUTTI i prodotti correlati
       let minPrice = null;
       let maxPrice = null;
-      let variantCount = 0;
-
-      if (relatedPrintifyProducts.length > 0) {
+      let totalVariants = 0;
+      
+      if (relatedProducts.length > 0) {
         const allPrices = [];
         
-        relatedPrintifyProducts.forEach(product => {
-          if (product.price?.min) allPrices.push(product.price.min);
-          if (product.price?.max && product.price.max !== product.price.min) {
-            allPrices.push(product.price.max);
+        relatedProducts.forEach(product => {
+          if (product.price?.min !== undefined) {
+            allPrices.push(product.price.min / 100); // Converti da centesimi
           }
-          variantCount += (product.variants?.length || 0);
+          if (product.price?.max !== undefined) {
+            allPrices.push(product.price.max / 100);
+          }
+          totalVariants += (product.variants?.length || 0);
         });
-
+        
         if (allPrices.length > 0) {
           minPrice = Math.min(...allPrices);
           maxPrice = Math.max(...allPrices);
         }
       }
-
-      // Fallback a prezzi mock se non ci sono dati Printify
+      
+      // Fallback prezzi se nessun prodotto trovato
       if (minPrice === null) {
-        minPrice = 22.99;
-        maxPrice = 34.99;
-        variantCount = 6; // Mock: T-shirt + Sweatshirt con 3 colori ciascuno
+        minPrice = 25.00;
+        maxPrice = 35.00;
+        totalVariants = 120; // Mock totale varianti T-shirt + Felpa
       }
-
-      return {
+      
+      console.log(`DEBUG: Combined pricing: €${minPrice} - €${maxPrice}, ${totalVariants} total variants`);
+      
+      const unifiedProduct = {
         id: createUnifiedId(graphic.id),
         graphicId: graphic.id,
         title: graphic.title,
         slug: graphic.id,
-        imageSrc: graphic.src,
+        imageSrc: graphic.src, // USA SEMPRE IMMAGINE LOCALE
         image: graphic.src,
+        localFallback: graphic.src,
         height: graphic.height || 'md',
         
-        // Dati di prezzo unificati
+        // Dati di prezzo COMBINATI di tutti i prodotti
         price: minPrice,
         priceMax: maxPrice,
         currency: 'EUR',
         
-        // Metadati
-        variantCount: variantCount,
-        printifyProducts: relatedPrintifyProducts,
-        views: Math.floor(Math.random() * 500) + 50, // Mock views
+        // Metadati combinati
+        variantCount: totalVariants,
+        printifyProducts: relatedProducts, // Tutti i prodotti correlati
+        productTypes: productTypes, // Breakdown per tipo
+        views: Math.floor(Math.random() * 500) + 50,
         
-        // Per compatibilità
         status: 'active',
         tags: [`graphic:${graphic.id}`],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
+      
+      console.log(`DEBUG: Created unified product:`, {
+        title: unifiedProduct.title,
+        imageSrc: unifiedProduct.imageSrc,
+        priceRange: `€${unifiedProduct.price} - €${unifiedProduct.priceMax}`,
+        totalVariants: unifiedProduct.variantCount,
+        printifyProducts: unifiedProduct.printifyProducts.length,
+        tshirts: unifiedProduct.productTypes.tshirt.length,
+        sweatshirts: unifiedProduct.productTypes.sweatshirt.length
+      });
+      
+      return unifiedProduct;
     });
-
-    console.log('✅ Prodotti unificati creati:', unified.length);
+    
+    console.log('DEBUG: Unification complete. Unified products created:', unified.length);
     return unified;
   };
 
@@ -175,17 +236,17 @@ const ProductsGrid = () => {
         setLoading(true);
         setError(null);
 
-        console.log('🔄 Inizio caricamento dati...');
+        console.log('DEBUG: Starting data loading process...');
 
-        // 1. Carica manifest.json (fonte principale)
+        // 1. Carica manifest.json (solo grafiche test)
         const manifestGraphics = await loadManifest();
         setGraphics(manifestGraphics);
 
-        // 2. Carica prodotti Printify (per prezzi)
+        // 2. Carica prodotti Printify
         const printifyData = await fetchPrintifyCatalog();
         setPrintifyProducts(printifyData);
 
-        // 3. Unifica i dati
+        // 3. Unifica i dati (1 grafica = 1 card)
         const unifiedData = unifyProducts(manifestGraphics, printifyData);
         setUnifiedProducts(unifiedData);
 
@@ -195,13 +256,10 @@ const ProductsGrid = () => {
         setHasMore(unifiedData.length > INITIAL_LOAD);
         prevLenRef.current = initial.length;
 
-        console.log('✅ Caricamento completato!');
-        console.log('Grafiche:', manifestGraphics.length);
-        console.log('Prodotti Printify:', printifyData.length);
-        console.log('Prodotti unificati:', unifiedData.length);
+        console.log('DEBUG: Loading completed successfully!');
 
       } catch (error) {
-        console.error('❌ Errore caricamento:', error);
+        console.error('DEBUG: Error during loading:', error);
         setError(error.message);
         setUnifiedProducts([]);
         setDisplayedProducts([]);
@@ -239,42 +297,9 @@ const ProductsGrid = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [displayedProducts.length]);
 
-  // --- INFINITE SCROLL -----------------------------------------------------
-  const loadMoreProducts = useCallback(() => {
-    if (loadingMore || !hasMore) return;
-    setLoadingMore(true);
-
-    setTimeout(() => {
-      const current = displayedProducts.length;
-      const next = unifiedProducts.slice(current, current + LOAD_MORE);
-
-      if (next.length > 0) {
-        setDisplayedProducts((prev) => [...prev, ...next]);
-        prevLenRef.current = current + next.length;
-      }
-
-      setHasMore(current + next.length < unifiedProducts.length);
-      setLoadingMore(false);
-    }, 300);
-  }, [unifiedProducts, displayedProducts.length, loadingMore, hasMore]);
-
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting && hasMore && !loadingMore) {
-          loadMoreProducts();
-        }
-      },
-      { threshold: 0.1, rootMargin: '100px' }
-    );
-    io.observe(sentinelRef.current);
-    return () => io.disconnect();
-  }, [hasMore, loadingMore, loadMoreProducts]);
-
   // --- EVENT HANDLERS ------------------------------------------------------
   const handleProductClick = useCallback((product) => {
-    // Naviga usando il graphicId, non l'ID unificato
+    console.log('DEBUG CLICK: Navigating to product:', product.graphicId);
     navigate(`/product/${product.graphicId}`);
   }, [navigate]);
 
@@ -289,24 +314,10 @@ const ProductsGrid = () => {
       <div className="products-grid-wrapper">
         <div className="products-error">
           <div className="error-content">
-            <h3>⚠️ Errore di caricamento</h3>
-            <p>Non riesco a caricare i prodotti:</p>
-            <code>{error}</code>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="retry-button"
-              style={{
-                marginTop: '16px',
-                padding: '12px 24px',
-                background: 'var(--antique-pink)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontFamily: 'inherit'
-              }}
-            >
-              🔄 Riprova
+            <h3>Errore di caricamento</h3>
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()} className="retry-button">
+              Riprova
             </button>
           </div>
         </div>
@@ -322,7 +333,6 @@ const ProductsGrid = () => {
             <img src="/logo/logo_black.svg" alt="OnlyOne" className="loading-logo-img" />
           </div>
           <p className="loading-text">Caricamento collezione OnlyOne...</p>
-          <p className="loading-subtext">Unificazione grafiche e prezzi...</p>
         </div>
       </div>
     );
@@ -333,7 +343,7 @@ const ProductsGrid = () => {
       <div className="products-grid-wrapper">
         <div className="products-empty">
           <h3>Nessuna grafica disponibile</h3>
-          <p>La collezione è vuota o non accessibile.</p>
+          <p>Controlla che "La Danzatrice delle Ombre" sia presente nel manifest.json</p>
         </div>
       </div>
     );
@@ -346,7 +356,7 @@ const ProductsGrid = () => {
       <div className="backend-status">
         <span className="status-indicator">🟢</span>
         <span>
-          {graphics.length} grafiche • {printifyProducts.length} prodotti Printify • {unifiedProducts.length} cards
+          {graphics.length} grafiche • {printifyProducts.length} prodotti Printify • {unifiedProducts.length} cards unificate
         </span>
       </div>
 
@@ -362,26 +372,6 @@ const ProductsGrid = () => {
             />
           ))}
         </div>
-
-        {/* Loading more */}
-        {loadingMore && (
-          <div className="loading-more">
-            <div className="loading-spinner"></div>
-            <p>Caricamento altre grafiche...</p>
-          </div>
-        )}
-
-        {/* Sentinel for infinite scroll */}
-        {hasMore && !loadingMore && (
-          <div ref={sentinelRef} className="scroll-sentinel"></div>
-        )}
-
-        {/* End message */}
-        {!hasMore && displayedProducts.length > 0 && (
-          <div className="products-end">
-            <p>Hai visto tutte le {unifiedProducts.length} grafiche della collezione OnlyOne!</p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -398,12 +388,13 @@ const UnifiedProductCard = ({ product, onProductClick, onToggleFavorite, isFavor
   };
 
   const handleImageError = () => {
-    console.warn(`⚠️ Errore caricamento immagine per ${product.graphicId}:`, product.imageSrc);
+    console.warn('DEBUG: Image load error for:', product.title);
     setImageError(true);
     setImageLoaded(false);
   };
 
   const handleClick = () => {
+    console.log('DEBUG: Card clicked:', product.title);
     onProductClick(product);
   };
 
@@ -415,15 +406,17 @@ const UnifiedProductCard = ({ product, onProductClick, onToggleFavorite, isFavor
     <div 
       className={`product-card ${imageLoaded ? 'is-img-ready' : ''}`}
       onClick={handleClick}
+      data-product-id={product.id}
+      data-graphic-id={product.graphicId}
     >
-      {/* 🔥 STRUTTURA CORRETTA: .media container (come nel CSS originale) */}
+      {/* Media container */}
       <div className="media">
         {/* Skeleton shimmer */}
         {!imageLoaded && !imageError && (
           <div className="skel" />
         )}
         
-        {/* Immagine principale - SENZA classi extra */}
+        {/* Main image - SEMPRE LOCALE */}
         <img
           src={product.imageSrc}
           alt={product.title}
@@ -446,7 +439,7 @@ const UnifiedProductCard = ({ product, onProductClick, onToggleFavorite, isFavor
           </div>
         )}
 
-        {/* 🔥 OVERLAY CORRETTO: .card-overlay (come nel CSS originale) */}
+        {/* Card overlay */}
         <div className="card-overlay">
           <button
             className={`favorite-btn ${isProductFavorite ? 'active' : ''}`}
@@ -458,16 +451,34 @@ const UnifiedProductCard = ({ product, onProductClick, onToggleFavorite, isFavor
         </div>
       </div>
 
-      {/* 🔥 CONTENT CORRETTO: .card-content (come nel CSS originale) */}
+      {/* Card content */}
       <div className="card-content">
         <div className="card-meta">
           <div className="card-title-wrapper">
-            {/* 🔥 TITOLO CORRETTO: .card-title per signature sweep effect */}
             <h3 className="card-title">{product.title}</h3>
+            {/* Info combinata */}
+            <small style={{ 
+              fontSize: '11px', 
+              color: '#666', 
+              fontFamily: 'monospace',
+              display: 'block',
+              marginTop: '4px'
+            }}>
+              {product.productTypes.tshirt.length} T-shirt + {product.productTypes.sweatshirt.length} Felpe
+            </small>
           </div>
           <div className="card-views">
             <Eye size={16} />
             <span>{product.views}</span>
+          </div>
+        </div>
+        {/* Range prezzo combinato */}
+        <div style={{ marginTop: '8px' }}>
+          <span style={{ fontWeight: 'bold', color: '#333' }}>
+            €{product.price.toFixed(2)} - €{product.priceMax.toFixed(2)}
+          </span>
+          <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+            {product.variantCount} varianti totali
           </div>
         </div>
       </div>
