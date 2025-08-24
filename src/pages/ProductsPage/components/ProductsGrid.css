@@ -9,7 +9,7 @@
   overflow: visible;
 }
 
-/* 🔥 CLEAN: Multi-column grid SENZA trigger di compositing */
+/* ðŸ”¥ CLEAN: Multi-column grid SENZA trigger di compositing */
 .products-grid {
   column-count: auto;
   column-width: 270px;
@@ -26,7 +26,7 @@
   contain: layout style;
 }
 
-/* 🔥 CLEAN: Product card SENZA trasformazioni 3D nello stato base */
+/* ðŸ”¥ CLEAN: Product card SENZA trasformazioni 3D nello stato base */
 .products-grid .product-card {
   break-inside: avoid;
   page-break-inside: avoid;
@@ -47,7 +47,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* 🔥 ISOLATION: Previene layout thrashing sui favoriti */
+  /* ðŸ”¥ ISOLATION: Previene layout thrashing sui favoriti */
   isolation: isolate;
   
   /* Performance minimale */
@@ -63,58 +63,51 @@
   display: none !important;
 }
 
-/* 🔥 MODIFICATO: Media container con più spazio per l'immagine */
+/* ðŸ”¥ MODIFICATO: Media container con piÃ¹ spazio per l'immagine */
 .products-grid .product-card .media {
   border: none;
-  min-height: 280px; /* 🔥 AUMENTATO: da 250px a 280px per più spazio immagine */
+  min-height: 280px; /* ðŸ”¥ AUMENTATO: da 250px a 280px per piÃ¹ spazio immagine */
   position: relative;
   background: #f8f8f8;
   border-radius: 16px 16px 0 0;
   overflow: hidden;
 }
 
-/* 🔥 CLEAN: Immagini SENZA filtri o trasformazioni base */
+/* ðŸ”¥ CLEAN: Immagini SENZA filtri o trasformazioni base */
 .products-grid .product-card img {
   display: block !important;
   width: 100% !important;
   height: auto !important;
   max-width: 100% !important;
   background-color: #f5f5f5;
-  min-height: 280px; /* 🔥 AGGIORNATO: allineato con media container */
+  min-height: 280px; /* ðŸ”¥ AGGIORNATO: allineato con media container */
   object-fit: cover;
   object-position: center;
   
-  /* 🔥 CLEAN: Solo transizione opacity, no transform nello stato base */
+  /* ðŸ”¥ CLEAN: Solo transizione opacity, no transform nello stato base */
   transition: opacity 0.3s ease;
 }
 
-/* 🔥 NUOVO: Card overlay - SEMPRE VISIBILE per favoriti */
+/* ðŸ”¥ FIX: Card overlay con Z-INDEX MASSIMO per cuore cliccabile */
 .card-overlay {
   position: absolute;
   top: 12px;
   right: 12px;
-  opacity: 0; /* Di default nascosto */
+  opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 15; /* 🔥 AUMENTATO: da 5 a 15 per priorità massima */
+  z-index: 15; /* ðŸ”¥ AUMENTATO: da 5 a 15 per prioritÃ  massima */
   
-  /* 🔥 ISOLATION: Previene interferenze con altri elementi */
+  /* ðŸ”¥ ISOLATION: Previene interferenze con altri elementi */
   isolation: isolate;
-  pointer-events: none; /* 🔥 OTTIMIZZAZIONE: Solo il bottone riceve eventi */
+  pointer-events: none; /* ðŸ”¥ OTTIMIZZAZIONE: Solo il bottone riceve eventi */
 }
 
-/* 🔥 NUOVO: Overlay sempre visibile quando il bottone è attivo (preferito) */
-.card-overlay:has(.favorite-btn.active) {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Hover normale per prodotti NON preferiti */
 .product-card:hover .card-overlay {
   opacity: 1;
-  pointer-events: auto; /* 🔥 ABILITATO: Solo quando visibile */
+  pointer-events: auto; /* ðŸ”¥ ABILITATO: Solo quando visibile */
 }
 
-/* 🔥 MODIFICATO: Favorite button con gestione stato attivo migliorata */
+/* ðŸ”¥ FIX: Favorite button con MASSIMA PRIORITÃ€ */
 .favorite-btn {
   background: rgba(255, 255, 255, 0.9);
   border: none;
@@ -130,50 +123,45 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
-  /* 🔥 MASSIMA PRIORITÀ per click events */
+  /* ðŸ”¥ MASSIMA PRIORITÃ€ per click events */
   position: relative;
-  z-index: 20; /* 🔥 SUPER HIGH: Sopra tutto */
-  pointer-events: auto; /* 🔥 SEMPRE cliccabile */
+  z-index: 20; /* ðŸ”¥ SUPER HIGH: Sopra tutto */
+  pointer-events: auto; /* ðŸ”¥ SEMPRE cliccabile */
   
-  /* 🔥 PERFORMANCE: Isolamento per evitare repaints */
+  /* ðŸ”¥ PERFORMANCE: Isolamento per evitare repaints */
   will-change: transform, background-color;
   transform: translateZ(0); /* GPU layer */
 }
 
 .favorite-btn:hover {
   background: rgba(255, 255, 255, 1);
-  transform: scale(1.1) translateZ(0); /* 🔥 MANTIENI GPU layer */
+  transform: scale(1.1) translateZ(0); /* ðŸ”¥ MANTIENI GPU layer */
 }
 
-/* 🔥 MODIFICATO: Stato attivo con background e shadow migliorati */
 .favorite-btn.active {
   background: var(--antique-pink);
   color: white;
-  /* 🔥 AGGIUNTO: Box shadow per farlo risaltare meglio quando è sempre visibile */
-  box-shadow: 0 4px 12px rgba(217, 165, 165, 0.3);
 }
 
 .favorite-btn.active:hover {
   background: var(--antique-pink);
-  transform: scale(1.1) translateZ(0); /* 🔥 MANTIENI GPU layer */
-  /* 🔥 HOVER su preferito: shadow più intenso */
-  box-shadow: 0 6px 16px rgba(217, 165, 165, 0.4);
+  transform: scale(1.1) translateZ(0); /* ðŸ”¥ MANTIENI GPU layer */
 }
 
-/* 🔥 ANTI-REFLOW: Transizione solo su colore, non su layout */
+/* ðŸ”¥ ANTI-REFLOW: Transizione solo su colore, non su layout */
 .favorite-btn svg {
-  transition: none; /* 🔥 NO transition su SVG per performance */
-  pointer-events: none; /* 🔥 Click passa al parent button */
+  transition: none; /* ðŸ”¥ NO transition su SVG per performance */
+  pointer-events: none; /* ðŸ”¥ Click passa al parent button */
 }
 
-/* 🔥 MODIFICATO: Card content con meno padding per abbassare il contenitore */
+/* ðŸ”¥ MODIFICATO: Card content con meno padding per abbassare il contenitore */
 .card-content {
-  padding: 12px 20px 16px; /* 🔥 RIDOTTO: da 16px 20px 20px a 12px 20px 16px */
+  padding: 12px 20px 16px; /* ðŸ”¥ RIDOTTO: da 16px 20px 20px a 12px 20px 16px */
   background: rgba(255, 255, 255, 0.95);
   border-radius: 0 0 16px 16px;
 }
 
-/* 🔥 SOLUZIONE DEFINITIVA: Card meta layout riorganizzato */
+/* ðŸ”¥ SOLUZIONE DEFINITIVA: Card meta layout riorganizzato */
 .card-meta {
   display: flex;
   justify-content: space-between;
@@ -181,17 +169,17 @@
   gap: 12px;
 }
 
-/* 🔥 NUOVO: Wrapper per il titolo che risolve il problema flex */
+/* ðŸ”¥ NUOVO: Wrapper per il titolo che risolve il problema flex */
 .card-title-wrapper {
   flex: 1;
   min-width: 0; /* Importante per evitare overflow */
 }
 
 /* ===========================================
-   ✨ SIGNATURE SWEEP HOVER EFFECT - SOLUZIONE DEFINITIVA
+   âœ¨ SIGNATURE SWEEP HOVER EFFECT - SOLUZIONE DEFINITIVA
    =========================================== */
 
-/* 🔥 FIXED: Card title con signature sweep effect - width esteso */
+/* ðŸ”¥ FIXED: Card title con signature sweep effect - width esteso */
 .card-title {
   font-family: 'Libre Bodoni', serif;
   font-size: 1.1rem;
@@ -202,30 +190,30 @@
   letter-spacing: -0.01em;
   cursor: pointer;
   
-  /* 🔥 SIGNATURE SETUP: Positioning per l'effetto */
+  /* ðŸ”¥ SIGNATURE SETUP: Positioning per l'effetto */
   position: relative;
   display: inline-block;
   
-  /* 🔥 PADDING per spazio sottolineatura SVG */
+  /* ðŸ”¥ PADDING per spazio sottolineatura SVG */
   padding-bottom: 8px;
   
-  /* 🔥 PERFORMANCE: Preparazione per animazioni */
+  /* ðŸ”¥ PERFORMANCE: Preparazione per animazioni */
   will-change: color, text-shadow;
   transition: color 0.3s ease;
 }
 
-/* ✨ SIGNATURE SWEEP: Cambio colore del testo al hover della card */
+/* âœ¨ SIGNATURE SWEEP: Cambio colore del testo al hover della card */
 .product-card:hover .card-title {
   animation: signatureFadeIn 0.5s ease-out forwards;
 }
 
-/* ✨ FIXED: Sottolineatura SVG ondulata che copre TUTTA la larghezza */
+/* âœ¨ FIXED: Sottolineatura SVG ondulata che copre TUTTA la larghezza */
 .product-card:hover .card-title::after {
   content: '';
   position: absolute;
   bottom: -4px;
-  left: -6px; /* 🔥 FINAL FIX: Esteso a -6px */
-  width: calc(100% + 12px); /* 🔥 FINAL FIX: Esteso a +12px */
+  left: -6px; /* ðŸ”¥ FINAL FIX: Esteso a -6px */
+  width: calc(100% + 12px); /* ðŸ”¥ FINAL FIX: Esteso a +12px */
   height: 3px;
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 4"><path d="M-10,2 Q30,0.5 60,2 T130,2" stroke="%23D9A5A5" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>') no-repeat;
   background-size: 100% 100%;
@@ -235,12 +223,12 @@
   animation: signatureLineDraw 0.5s ease-out forwards;
 }
 
-/* ✨ SIGNATURE SWEEP: Reset quando si toglie l'hover */
+/* âœ¨ SIGNATURE SWEEP: Reset quando si toglie l'hover */
 .product-card:not(:hover) .card-title::after {
   animation: signatureLineHide 0.3s ease-out forwards;
 }
 
-/* ✨ KEYFRAMES: Fade-in del testo con glow */
+/* âœ¨ KEYFRAMES: Fade-in del testo con glow */
 @keyframes signatureFadeIn {
   0% {
     color: var(--carbon-black);
@@ -252,7 +240,7 @@
   }
 }
 
-/* ✨ KEYFRAMES: Disegno della linea SVG ondulata */
+/* âœ¨ KEYFRAMES: Disegno della linea SVG ondulata */
 @keyframes signatureLineDraw {
   0% {
     transform: scaleX(0);
@@ -267,7 +255,7 @@
   }
 }
 
-/* ✨ KEYFRAMES: Nascondere la linea quando si toglie l'hover */
+/* âœ¨ KEYFRAMES: Nascondere la linea quando si toglie l'hover */
 @keyframes signatureLineHide {
   0% {
     transform: scaleX(1);
@@ -279,7 +267,7 @@
   }
 }
 
-/* 🔥 MODIFICATO: Card views ora più compatte e allineate a destra */
+/* ðŸ”¥ MODIFICATO: Card views ora piÃ¹ compatte e allineate a destra */
 .card-views {
   display: flex;
   align-items: center;
@@ -287,7 +275,7 @@
   font-size: 0.85rem;
   color: var(--carbon-black);
   opacity: 0.6;
-  flex-shrink: 0; /* 🔥 AGGIUNTO: non si riduce mai */
+  flex-shrink: 0; /* ðŸ”¥ AGGIUNTO: non si riduce mai */
 }
 
 /* Image Error Fallback */
@@ -317,7 +305,7 @@
   margin: 0;
 }
 
-/* Skeleton shimmer - MANTENUTO perché necessario */
+/* Skeleton shimmer - MANTENUTO perchÃ© necessario */
 .products-grid .product-card .skel {
   position: absolute !important;
   inset: 0 !important;
@@ -469,7 +457,7 @@
     padding: 20px;
   }
   
-  /* ✨ RESPONSIVE: Riduzione effetto su tablet */
+  /* âœ¨ RESPONSIVE: Riduzione effetto su tablet */
   .product-card:hover .card-title::after {
     height: 3px;
     bottom: 0;
@@ -532,7 +520,7 @@
     padding: 16px;
   }
   
-  /* ✨ RESPONSIVE: Ulteriore riduzione su mobile large */
+  /* âœ¨ RESPONSIVE: Ulteriore riduzione su mobile large */
   .product-card:hover .card-title::after {
     height: 2px;
     bottom: 1px;
@@ -577,7 +565,7 @@
     font-size: 0.8rem;
   }
   
-  /* ✨ MOBILE SMALL: Disabilita SVG, mantieni solo cambio colore */
+  /* âœ¨ MOBILE SMALL: Disabilita SVG, mantieni solo cambio colore */
   .product-card:hover .card-title::after {
     display: none;
   }
@@ -633,10 +621,10 @@
 }
 
 /* ===========================================
-   ✨ ACCESSIBILITY & PERFORMANCE CON SIGNATURE SWEEP
+   âœ¨ ACCESSIBILITY & PERFORMANCE CON SIGNATURE SWEEP
    =========================================== */
 
-/* ✨ REDUCED MOTION: Disabilita animazioni signature sweep */
+/* âœ¨ REDUCED MOTION: Disabilita animazioni signature sweep */
 @media (prefers-reduced-motion: reduce) {
   .loading-logo {
     animation: none !important;
@@ -663,7 +651,7 @@
     transition: none !important;
   }
   
-  /* ✨ DISABILITA: Tutte le animazioni signature sweep */
+  /* âœ¨ DISABILITA: Tutte le animazioni signature sweep */
   .product-card:hover .card-title {
     animation: none !important;
     color: var(--antique-pink);
@@ -675,7 +663,7 @@
   }
 }
 
-/* ✨ HIGH CONTRAST: Versione accessibile del signature sweep */
+/* âœ¨ HIGH CONTRAST: Versione accessibile del signature sweep */
 @media (prefers-contrast: high) {
   .products-grid .product-card {
     border: 1px solid var(--carbon-black);
@@ -685,7 +673,7 @@
     border: 1px solid var(--carbon-black);
   }
   
-  /* ✨ HIGH CONTRAST: SVG nero invece di antique-pink */
+  /* âœ¨ HIGH CONTRAST: SVG nero invece di antique-pink */
   .product-card:hover .card-title::after {
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 4"><path d="M-10,2 Q30,0.5 60,2 T130,2" stroke="%23000000" stroke-width="3" fill="none" stroke-linecap="round"/></svg>') no-repeat;
   }
@@ -725,13 +713,13 @@
     display: none;
   }
   
-  /* ✨ PRINT: Rimuovi effetti signature sweep */
+  /* âœ¨ PRINT: Rimuovi effetti signature sweep */
   .product-card:hover .card-title::after {
     display: none;
   }
 }
 
-/* 🔥 PERFORMANCE OTTIMIZZATA - GPU LAYERS STRATEGICI */
+/* ðŸ”¥ PERFORMANCE OTTIMIZZATA - GPU LAYERS STRATEGICI */
 .products-grid-wrapper {
   contain: layout style;
 }
@@ -744,7 +732,7 @@
   contain: layout style paint;
 }
 
-/* 🔥 GPU LAYERS solo per elementi interattivi */
+/* ðŸ”¥ GPU LAYERS solo per elementi interattivi */
 .favorite-btn {
   contain: layout style paint;
   transform: translateZ(0); /* Force GPU layer */
@@ -754,7 +742,7 @@
   contain: layout style paint;
 }
 
-/* ✨ PERFORMANCE: GPU layer per signature sweep quando necessario */
+/* âœ¨ PERFORMANCE: GPU layer per signature sweep quando necessario */
 .card-title {
   contain: layout style;
 }

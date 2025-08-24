@@ -1,4 +1,4 @@
-// src/pages/ProductsPage/components/ProductsGrid.jsx - VERSIONE BACKEND
+// src/pages/ProductsPage/components/ProductsGrid.jsx - VERSIONE GRAFICHE UNIFICATE
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Eye } from 'lucide-react';
@@ -7,18 +7,21 @@ import './ProductsGrid.css';
 
 const ProductsGrid = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
+  
+  // Stati principali
+  const [graphics, setGraphics] = useState([]); // Grafiche dal manifest.json
+  const [printifyProducts, setPrintifyProducts] = useState([]); // Prodotti dal backend
+  const [unifiedProducts, setUnifiedProducts] = useState([]); // Prodotti unificati finali
   const [displayedProducts, setDisplayedProducts] = useState([]);
+  
+  // Stati di caricamento
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
   
   // Hook preferiti
-  const { 
-    toggleFavorite, 
-    isFavorite
-  } = useFavoritesContext();
+  const { toggleFavorite, isFavorite } = useFavoritesContext();
 
   // Refs
   const sentinelRef = useRef(null);
@@ -31,91 +34,176 @@ const ProductsGrid = () => {
   // Backend API configuration
   const API_BASE_URL = 'http://localhost:5001/api';
 
-  // --- API Calls ------------------------------------------------------------
-  const fetchCatalog = async (page = 1, limit = 50) => {
+  // --- UTILITY FUNCTIONS ---------------------------------------------------
+  const isSafari = () => /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  // Funzione per estrarre il nome della grafica dal titolo Printify
+  const extractGraphicName = (printifyTitle) => {
+    if (!printifyTitle) return null;
+    
+    // Il formato tipico è: "dragon_sweatshirt_680c4e" o "dragon_tshirt_680c4e"
+    // Vogliamo estrarre "dragon"
+    const parts = printifyTitle.toLowerCase().split('_');
+    if (parts.length >= 2) {
+      // Rimuovi gli ultimi elementi che sono tipo prodotto e ID
+      // Mantieni solo la parte della grafica
+      return parts[0]; // In questo caso "dragon"
+    }
+    
+    // Fallback: cerca corrispondenze nei nostri ID grafiche
+    const lowerTitle = printifyTitle.toLowerCase();
+    return lowerTitle;
+  };
+
+  // Funzione per creare un ID unico per la grafica unificata
+  const createUnifiedId = (graphicId) => `unified_${graphicId}`;
+
+  // --- API CALLS -----------------------------------------------------------
+  const loadManifest = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/catalog?page=${page}&limit=${limit}`);
+      const response = await fetch('/prodotti/manifest.json');
+      if (!response.ok) {
+        throw new Error(`Errore caricamento manifest: ${response.status}`);
+      }
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error('Errore caricamento manifest.json:', error);
+      throw error;
+    }
+  };
+
+  const fetchPrintifyCatalog = async () => {
+    try {
+      console.log('🔄 Caricamento prodotti Printify dal backend...');
+      const response = await fetch(`${API_BASE_URL}/catalog?limit=100`);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      return data;
+      console.log('✅ Prodotti Printify caricati:', data.products?.length || 0);
+      return data.products || [];
     } catch (error) {
-      console.error('Error fetching catalog:', error);
-      throw error;
+      console.error('Errore caricamento catalogo Printify:', error);
+      // Non bloccare l'app se Printify non funziona
+      return [];
     }
   };
 
-  // --- Helpers --------------------------------------------------------------
-  const isSafari = () => /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  // --- PROCESSING FUNCTIONS ------------------------------------------------
+  const unifyProducts = (manifestGraphics, printifyProducts) => {
+    console.log('🔄 Unificazione prodotti...');
+    console.log('Grafiche manifest:', manifestGraphics.length);
+    console.log('Prodotti Printify:', printifyProducts.length);
 
-  const slugify = (s) => (s || '')
-    .toString()
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '');
+    const unified = manifestGraphics.map(graphic => {
+      // Trova tutti i prodotti Printify che corrispondono a questa grafica
+      const relatedPrintifyProducts = printifyProducts.filter(product => {
+        const extractedName = extractGraphicName(product.title);
+        return extractedName === graphic.id || 
+               product.title.toLowerCase().includes(graphic.id.toLowerCase());
+      });
 
-  // Trasforma i prodotti dal backend nel formato atteso dal grid
-  const transformBackendProduct = (backendProduct) => {
-    return {
-      id: backendProduct.id,
-      printifyId: backendProduct.printifyId,
-      title: backendProduct.title,
-      slug: backendProduct.handle,
-      image: backendProduct.image,
-      imageSrc: backendProduct.image,
-      description: backendProduct.description,
-      price: backendProduct.price?.min || 0,
-      priceMax: backendProduct.price?.max || 0,
-      currency: backendProduct.price?.currency || 'EUR',
-      variants: backendProduct.variants || [],
-      status: backendProduct.status,
-      views: Math.floor(Math.random() * 1000) + 100, // Mock views per ora
-      tags: backendProduct.tags || [],
-      createdAt: backendProduct.createdAt,
-      updatedAt: backendProduct.updatedAt
-    };
+      console.log(`Grafica "${graphic.id}": trovati ${relatedPrintifyProducts.length} prodotti Printify`);
+
+      // Calcola il range di prezzi
+      let minPrice = null;
+      let maxPrice = null;
+      let variantCount = 0;
+
+      if (relatedPrintifyProducts.length > 0) {
+        const allPrices = [];
+        
+        relatedPrintifyProducts.forEach(product => {
+          if (product.price?.min) allPrices.push(product.price.min);
+          if (product.price?.max && product.price.max !== product.price.min) {
+            allPrices.push(product.price.max);
+          }
+          variantCount += (product.variants?.length || 0);
+        });
+
+        if (allPrices.length > 0) {
+          minPrice = Math.min(...allPrices);
+          maxPrice = Math.max(...allPrices);
+        }
+      }
+
+      // Fallback a prezzi mock se non ci sono dati Printify
+      if (minPrice === null) {
+        minPrice = 22.99;
+        maxPrice = 34.99;
+        variantCount = 6; // Mock: T-shirt + Sweatshirt con 3 colori ciascuno
+      }
+
+      return {
+        id: createUnifiedId(graphic.id),
+        graphicId: graphic.id,
+        title: graphic.title,
+        slug: graphic.id,
+        imageSrc: graphic.src,
+        image: graphic.src,
+        height: graphic.height || 'md',
+        
+        // Dati di prezzo unificati
+        price: minPrice,
+        priceMax: maxPrice,
+        currency: 'EUR',
+        
+        // Metadati
+        variantCount: variantCount,
+        printifyProducts: relatedPrintifyProducts,
+        views: Math.floor(Math.random() * 500) + 50, // Mock views
+        
+        // Per compatibilità
+        status: 'active',
+        tags: [`graphic:${graphic.id}`],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    });
+
+    console.log('✅ Prodotti unificati creati:', unified.length);
+    return unified;
   };
 
-  // --- Data loading ---------------------------------------------------------
+  // --- DATA LOADING --------------------------------------------------------
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadAllData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        console.log('🔄 Loading products from backend...');
-        
-        // Fetch dal nostro backend invece che da Printify direttamente
-        const catalogData = await fetchCatalog(1, 50); // Rispettiamo il limite Printify di 50
-        
-        if (!catalogData.products || catalogData.products.length === 0) {
-          console.warn('No products found in backend catalog');
-          setProducts([]);
-          setDisplayedProducts([]);
-          setHasMore(false);
-          return;
-        }
+        console.log('🔄 Inizio caricamento dati...');
 
-        // Trasforma i prodotti nel formato atteso dal componente
-        const transformedProducts = catalogData.products.map(transformBackendProduct);
-        
-        console.log(`✅ Loaded ${transformedProducts.length} products from backend`);
-        console.log('First product:', transformedProducts[0]);
+        // 1. Carica manifest.json (fonte principale)
+        const manifestGraphics = await loadManifest();
+        setGraphics(manifestGraphics);
 
-        setProducts(transformedProducts);
-        const initial = transformedProducts.slice(0, INITIAL_LOAD);
+        // 2. Carica prodotti Printify (per prezzi)
+        const printifyData = await fetchPrintifyCatalog();
+        setPrintifyProducts(printifyData);
+
+        // 3. Unifica i dati
+        const unifiedData = unifyProducts(manifestGraphics, printifyData);
+        setUnifiedProducts(unifiedData);
+
+        // 4. Setup initial display
+        const initial = unifiedData.slice(0, INITIAL_LOAD);
         setDisplayedProducts(initial);
-        setHasMore(transformedProducts.length > INITIAL_LOAD);
+        setHasMore(unifiedData.length > INITIAL_LOAD);
         prevLenRef.current = initial.length;
 
+        console.log('✅ Caricamento completato!');
+        console.log('Grafiche:', manifestGraphics.length);
+        console.log('Prodotti Printify:', printifyData.length);
+        console.log('Prodotti unificati:', unifiedData.length);
+
       } catch (error) {
-        console.error('Error loading products:', error);
+        console.error('❌ Errore caricamento:', error);
         setError(error.message);
-        setProducts([]);
+        setUnifiedProducts([]);
         setDisplayedProducts([]);
         setHasMore(false);
       } finally {
@@ -123,10 +211,10 @@ const ProductsGrid = () => {
       }
     };
 
-    loadProducts();
+    loadAllData();
   }, []);
 
-  // --- Safari reflow fix ----------------------------------------------------
+  // --- SAFARI REFLOW FIX ---------------------------------------------------
   useEffect(() => {
     if (!isSafari()) return;
     const grid = gridRef.current;
@@ -151,24 +239,24 @@ const ProductsGrid = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [displayedProducts.length]);
 
-  // --- Infinite scroll ------------------------------------------------------
+  // --- INFINITE SCROLL -----------------------------------------------------
   const loadMoreProducts = useCallback(() => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
 
     setTimeout(() => {
       const current = displayedProducts.length;
-      const next = products.slice(current, current + LOAD_MORE);
+      const next = unifiedProducts.slice(current, current + LOAD_MORE);
 
       if (next.length > 0) {
         setDisplayedProducts((prev) => [...prev, ...next]);
         prevLenRef.current = current + next.length;
       }
 
-      setHasMore(current + next.length < products.length);
+      setHasMore(current + next.length < unifiedProducts.length);
       setLoadingMore(false);
     }, 300);
-  }, [products, displayedProducts.length, loadingMore, hasMore]);
+  }, [unifiedProducts, displayedProducts.length, loadingMore, hasMore]);
 
   useEffect(() => {
     if (!sentinelRef.current) return;
@@ -184,9 +272,10 @@ const ProductsGrid = () => {
     return () => io.disconnect();
   }, [hasMore, loadingMore, loadMoreProducts]);
 
-  // --- Handlers -------------------------------------------------------------
+  // --- EVENT HANDLERS ------------------------------------------------------
   const handleProductClick = useCallback((product) => {
-    navigate(`/product/${product.id}`);
+    // Naviga usando il graphicId, non l'ID unificato
+    navigate(`/product/${product.graphicId}`);
   }, [navigate]);
 
   const handleToggleFavorite = useCallback((productId, e) => {
@@ -194,36 +283,37 @@ const ProductsGrid = () => {
     toggleFavorite(productId);
   }, [toggleFavorite]);
 
-  // --- Error state ----------------------------------------------------------
+  // --- RENDER STATES -------------------------------------------------------
   if (error) {
     return (
       <div className="products-grid-wrapper">
         <div className="products-error">
           <div className="error-content">
-            <h3>⚠️ Errore di connessione</h3>
-            <p>Non riesco a caricare i prodotti dal server:</p>
+            <h3>⚠️ Errore di caricamento</h3>
+            <p>Non riesco a caricare i prodotti:</p>
             <code>{error}</code>
             <button 
               onClick={() => window.location.reload()} 
               className="retry-button"
+              style={{
+                marginTop: '16px',
+                padding: '12px 24px',
+                background: 'var(--antique-pink)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontFamily: 'inherit'
+              }}
             >
               🔄 Riprova
             </button>
-            <div className="error-debug">
-              <p><strong>Debug info:</strong></p>
-              <ul>
-                <li>Backend URL: {API_BASE_URL}</li>
-                <li>Verifica che il backend sia avviato su porta 5001</li>
-                <li>Controlla la console del browser per altri errori</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  // --- Loading state --------------------------------------------------------
   if (loading) {
     return (
       <div className="products-grid-wrapper">
@@ -231,97 +321,45 @@ const ProductsGrid = () => {
           <div className="loading-logo">
             <img src="/logo/logo_black.svg" alt="OnlyOne" className="loading-logo-img" />
           </div>
-          <p className="loading-text">Caricamento catalogo dal server...</p>
-          <p className="loading-subtext">Connessione al backend OnlyOne...</p>
+          <p className="loading-text">Caricamento collezione OnlyOne...</p>
+          <p className="loading-subtext">Unificazione grafiche e prezzi...</p>
         </div>
       </div>
     );
   }
 
-  // --- No products ----------------------------------------------------------
   if (displayedProducts.length === 0) {
     return (
       <div className="products-grid-wrapper">
         <div className="products-empty">
-          <h3>Nessun prodotto disponibile</h3>
-          <p>Il catalogo è vuoto o non accessibile.</p>
+          <h3>Nessuna grafica disponibile</h3>
+          <p>La collezione è vuota o non accessibile.</p>
         </div>
       </div>
     );
   }
 
-  // --- Main render ----------------------------------------------------------
+  // --- MAIN RENDER ---------------------------------------------------------
   return (
     <div className="products-grid-wrapper">
-      {/* Backend status indicator */}
+      {/* Status indicators */}
       <div className="backend-status">
         <span className="status-indicator">🟢</span>
-        <span>Backend attivo - {products.length} prodotti caricati</span>
+        <span>
+          {graphics.length} grafiche • {printifyProducts.length} prodotti Printify • {unifiedProducts.length} cards
+        </span>
       </div>
 
       <div className="products-grid-container">
         <div className="products-grid" ref={gridRef}>
           {displayedProducts.map((product) => (
-            <div
+            <UnifiedProductCard 
               key={product.id}
-              className="product-card"
-              onClick={() => handleProductClick(product)}
-            >
-              <div className="product-card-image-wrapper">
-                <img
-                  src={product.image || '/products/placeholder.png'}
-                  alt={product.title}
-                  className="product-card-image"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.src = '/products/placeholder.png';
-                  }}
-                />
-                
-                {/* Status badge per prodotti in publishing */}
-                {product.status === 'publishing' && (
-                  <div className="status-badge publishing">
-                    ⏳ In Pubblicazione
-                  </div>
-                )}
-                
-                <div className="product-card-overlay">
-                  <div className="product-card-actions">
-                    <button
-                      className={`favorite-btn ${isFavorite(product.id) ? 'active' : ''}`}
-                      onClick={(e) => handleToggleFavorite(product.id, e)}
-                      aria-label="Aggiungi ai preferiti"
-                    >
-                      <Heart size={20} />
-                    </button>
-                    <div className="views-count">
-                      <Eye size={16} />
-                      <span>{product.views}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="product-card-content">
-                <h3 className="product-card-title">{product.title}</h3>
-                <div className="product-card-price">
-                  {product.price === product.priceMax ? (
-                    <span className="price-single">
-                      €{product.price?.toFixed(2)}
-                    </span>
-                  ) : (
-                    <span className="price-range">
-                      €{product.price?.toFixed(2)} - €{product.priceMax?.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-                {product.variants && product.variants.length > 0 && (
-                  <div className="product-card-variants">
-                    {product.variants.length} varianti disponibili
-                  </div>
-                )}
-              </div>
-            </div>
+              product={product}
+              onProductClick={handleProductClick}
+              onToggleFavorite={handleToggleFavorite}
+              isFavorite={isFavorite(product.id)}
+            />
           ))}
         </div>
 
@@ -329,7 +367,7 @@ const ProductsGrid = () => {
         {loadingMore && (
           <div className="loading-more">
             <div className="loading-spinner"></div>
-            <p>Caricamento altri prodotti...</p>
+            <p>Caricamento altre grafiche...</p>
           </div>
         )}
 
@@ -341,9 +379,97 @@ const ProductsGrid = () => {
         {/* End message */}
         {!hasMore && displayedProducts.length > 0 && (
           <div className="products-end">
-            <p>Hai visto tutti i {products.length} prodotti disponibili!</p>
+            <p>Hai visto tutte le {unifiedProducts.length} grafiche della collezione OnlyOne!</p>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+// --- PRODUCT CARD COMPONENT ----------------------------------------------
+const UnifiedProductCard = ({ product, onProductClick, onToggleFavorite, isFavorite: isProductFavorite }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const handleImageError = () => {
+    console.warn(`⚠️ Errore caricamento immagine per ${product.graphicId}:`, product.imageSrc);
+    setImageError(true);
+    setImageLoaded(false);
+  };
+
+  const handleClick = () => {
+    onProductClick(product);
+  };
+
+  const handleFavoriteClick = (e) => {
+    onToggleFavorite(product.id, e);
+  };
+
+  return (
+    <div 
+      className={`product-card ${imageLoaded ? 'is-img-ready' : ''}`}
+      onClick={handleClick}
+    >
+      {/* 🔥 STRUTTURA CORRETTA: .media container (come nel CSS originale) */}
+      <div className="media">
+        {/* Skeleton shimmer */}
+        {!imageLoaded && !imageError && (
+          <div className="skel" />
+        )}
+        
+        {/* Immagine principale - SENZA classi extra */}
+        <img
+          src={product.imageSrc}
+          alt={product.title}
+          loading="lazy"
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{
+            opacity: imageLoaded ? 1 : 0,
+            transition: 'opacity 0.3s ease'
+          }}
+        />
+
+        {/* Fallback per errori immagine */}
+        {imageError && (
+          <div className="image-error">
+            <div className="error-placeholder">
+              <span>🖼️</span>
+              <p>{product.title}</p>
+            </div>
+          </div>
+        )}
+
+        {/* 🔥 OVERLAY CORRETTO: .card-overlay (come nel CSS originale) */}
+        <div className="card-overlay">
+          <button
+            className={`favorite-btn ${isProductFavorite ? 'active' : ''}`}
+            onClick={handleFavoriteClick}
+            aria-label="Aggiungi ai preferiti"
+          >
+            <Heart size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* 🔥 CONTENT CORRETTO: .card-content (come nel CSS originale) */}
+      <div className="card-content">
+        <div className="card-meta">
+          <div className="card-title-wrapper">
+            {/* 🔥 TITOLO CORRETTO: .card-title per signature sweep effect */}
+            <h3 className="card-title">{product.title}</h3>
+          </div>
+          <div className="card-views">
+            <Eye size={16} />
+            <span>{product.views}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
