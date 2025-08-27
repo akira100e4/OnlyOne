@@ -58,14 +58,11 @@ const ProductsGrid = () => {
       const data = await response.json();
       console.log('DEBUG: Manifest loaded, graphics found:', data?.length || 0);
       
-      // FOCUS TEST: Solo "La Danzatrice delle Ombre" per ora
-      const testGraphics = data.filter(g => 
-        g.id === 'la-danzatrice-delle-ombre' || 
-        g.title.toLowerCase().includes('danzatrice')
-      );
-      
-      console.log('DEBUG: Test graphics found:', testGraphics);
-      return testGraphics;
+     // 👍 Mostra tutte le grafiche del manifest
+console.log('DEBUG: All graphics from manifest:', data?.length || 0);
+return data;
+
+
     } catch (error) {
       console.error('DEBUG: Errore caricamento manifest.json:', error);
       throw error;

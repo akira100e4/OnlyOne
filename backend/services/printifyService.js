@@ -29,25 +29,25 @@ class PrintifyService {
     // Interceptors per logging e rate limiting
     this.client.interceptors.request.use(
       (config) => {
-        console.log(`📤 Printify API: ${config.method?.toUpperCase()} ${config.url}`);
+        console.log(`ðŸ"¤ Printify API: ${config.method?.toUpperCase()} ${config.url}`);
         return config;
       },
       (error) => {
-        console.error('📤❌ Request Error:', error);
+        console.error('ðŸ"¤âŒ Request Error:', error);
         return Promise.reject(error);
       }
     );
 
     this.client.interceptors.response.use(
       (response) => {
-        console.log(`📥 Printify API: ${response.status} ${response.config.url}`);
+        console.log(`ðŸ"¥ Printify API: ${response.status} ${response.config.url}`);
         return response;
       },
       (error) => {
         if (error.response?.status === 429) {
-          console.warn('⚠️ Rate limit hit, should implement backoff');
+          console.warn('âš ï¸ Rate limit hit, should implement backoff');
         }
-        console.error(`📥❌ Response Error: ${error.response?.status} ${error.config?.url}`);
+        console.error(`ðŸ"¥âŒ Response Error: ${error.response?.status} ${error.config?.url}`);
         return Promise.reject(error);
       }
     );
@@ -114,6 +114,186 @@ class PrintifyService {
       console.error(`Error fetching product ${productId}:`, error);
       throw new Error(`Failed to fetch product: ${error.message}`);
     }
+  }
+
+  // Cerca prodotti per query testuale (OTTIMIZZATO - NO FULL CATALOG)
+  async searchProducts(query, limit = 10) {
+    try {
+      console.log(`🔍 Fast search for: "${query}"`);
+      
+      if (!query || typeof query !== 'string') {
+        throw new Error('Query parameter is required and must be a string');
+      }
+
+      // Normalizza la query
+      const normalizedQuery = this.normalizeString(query);
+      const queryWords = this.extractSearchWords(normalizedQuery);
+      
+      console.log(`🔍 Query words: [${queryWords.join(', ')}]`);
+      
+      if (queryWords.length === 0) {
+        return {
+          products: [],
+          query: query,
+          matches: 0,
+          searchWords: queryWords,
+          strategy: 'empty_query'
+        };
+      }
+
+      // ⚡ STRATEGIA VELOCE: Carica solo le prime 2 pagine (100 prodotti max)
+      const MAX_PAGES = 2;
+      const BATCH_SIZE = 50;
+      
+      let allProducts = [];
+      let matchingProducts = [];
+      
+      for (let page = 1; page <= MAX_PAGES; page++) {
+        console.log(`📦 Fetching page ${page}/${MAX_PAGES}...`);
+        
+        const batch = await this.getProducts(page, BATCH_SIZE);
+        
+        if (!batch.products || batch.products.length === 0) {
+          console.log(`📦 No more products at page ${page}`);
+          break;
+        }
+        
+        // Filtra immediatamente questa pagina
+        const pageMatches = this.filterProductsByQuery(batch.products, queryWords, query);
+        matchingProducts = matchingProducts.concat(pageMatches);
+        allProducts = allProducts.concat(batch.products);
+        
+        console.log(`📦 Page ${page}: ${batch.products.length} products, ${pageMatches.length} matches`);
+        
+        // ⚡ EARLY EXIT: Se abbiamo abbastanza matches, fermiamoci
+        if (matchingProducts.length >= limit * 2) {
+          console.log(`⚡ Early exit: Found ${matchingProducts.length} matches, enough for ${limit} results`);
+          break;
+        }
+        
+        // ⚡ EARLY EXIT: Se è l'ultima pagina disponibile
+        if (batch.pagination.current_page >= batch.pagination.last_page) {
+          console.log(`📦 Reached last page (${batch.pagination.last_page})`);
+          break;
+        }
+        
+        // Rate limiting solo tra le chiamate
+        if (page < MAX_PAGES) {
+          await new Promise(resolve => setTimeout(resolve, 50)); // 50ms pausa
+        }
+      }
+
+      // Limita risultati finali
+      const limitedResults = matchingProducts.slice(0, limit);
+      
+      console.log(`✅ Fast search completed: ${matchingProducts.length} matches from ${allProducts.length} products`);
+      
+      return {
+        products: limitedResults,
+        query: query,
+        matches: matchingProducts.length,
+        total: allProducts.length,
+        searchWords: queryWords,
+        limited: matchingProducts.length > limit,
+        strategy: 'fast_search'
+      };
+
+    } catch (error) {
+      console.error(`❌ Fast search error for "${query}":`, error);
+      throw new Error(`Fast search failed: ${error.message}`);
+    }
+  }
+
+  // ⚡ VERSIONE ANCORA PIÙ VELOCE: Cerca solo nella prima pagina
+  async searchProductsFastest(query, limit = 10) {
+    try {
+      console.log(`⚡ Ultra-fast search for: "${query}"`);
+      
+      if (!query || typeof query !== 'string') {
+        throw new Error('Query parameter is required');
+      }
+
+      const normalizedQuery = this.normalizeString(query);
+      const queryWords = this.extractSearchWords(normalizedQuery);
+      
+      if (queryWords.length === 0) {
+        return { products: [], query, matches: 0, searchWords: [], strategy: 'empty_query' };
+      }
+
+      // Carica SOLO la prima pagina (50 prodotti)
+      console.log(`📦 Fetching first page only...`);
+      const firstPage = await this.getProducts(1, 50);
+      
+      if (!firstPage.products) {
+        return { products: [], query, matches: 0, searchWords: queryWords, strategy: 'no_products' };
+      }
+
+      // Filtra immediatamente
+      const matches = this.filterProductsByQuery(firstPage.products, queryWords, query);
+      const limited = matches.slice(0, limit);
+      
+      console.log(`⚡ Ultra-fast completed: ${matches.length} matches from ${firstPage.products.length} products`);
+      
+      return {
+        products: limited,
+        query,
+        matches: matches.length,
+        total: firstPage.products.length,
+        searchWords: queryWords,
+        limited: matches.length > limit,
+        strategy: 'ultra_fast'
+      };
+
+    } catch (error) {
+      console.error(`❌ Ultra-fast search error:`, error);
+      throw error;
+    }
+  }
+
+  // NEW: Utility - normalizza stringa (stesso algoritmo del frontend)
+  normalizeString(str) {
+    return str
+      .toLowerCase()
+      .replace(/[_\-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // NEW: Utility - estrae parole significative per la ricerca
+  extractSearchWords(normalizedStr) {
+    const stopWords = ['la', 'le', 'il', 'dello', 'della', 'degli', 'delle', 'del', 'di', 'da', 'in', 'con', 'per', 'tra', 'fra', 'the', 'of', 'and', 'a', 'an'];
+    
+    return normalizedStr
+      .split(' ')
+      .filter(word => word.length > 2 && !stopWords.includes(word));
+  }
+
+  // NEW: Utility - filtra prodotti che matchano la query
+  filterProductsByQuery(products, queryWords, originalQuery) {
+    return products.filter(product => {
+      if (!product.title) return false;
+      
+      const normalizedTitle = this.normalizeString(product.title);
+      
+      // Strategia 1: Match esatto della query completa
+      if (normalizedTitle.includes(this.normalizeString(originalQuery))) {
+        console.log(`🎯 Exact match found: "${product.title}"`);
+        return true;
+      }
+      
+      // Strategia 2: Match di almeno 1 parola significativa (abbassato da 2)
+      const titleWords = this.extractSearchWords(normalizedTitle);
+      const matchCount = queryWords.filter(qWord => 
+        titleWords.some(tWord => tWord.includes(qWord) || qWord.includes(tWord))
+      ).length;
+      
+      if (matchCount >= 1) {
+        console.log(`📝 Word match (${matchCount}/${queryWords.length}): "${product.title}"`);
+        return true;
+      }
+      
+      return false;
+    });
   }
 
   // Trasforma i dati Printify nel formato OnlyOne
@@ -208,7 +388,7 @@ class PrintifyService {
         }
       });
       
-      console.log(`✅ Publishing succeeded confirmed for product ${productId}`);
+      console.log(`âœ… Publishing succeeded confirmed for product ${productId}`);
       return response.data;
     } catch (error) {
       console.error(`Error confirming publishing success for ${productId}:`, error);
@@ -223,7 +403,7 @@ class PrintifyService {
         reason: reason || 'Unknown error during publishing'
       });
       
-      console.log(`❌ Publishing failed confirmed for product ${productId}: ${reason}`);
+      console.log(`âŒ Publishing failed confirmed for product ${productId}: ${reason}`);
       return response.data;
     } catch (error) {
       console.error(`Error confirming publishing failure for ${productId}:`, error);
@@ -258,7 +438,7 @@ class PrintifyService {
         }
       });
       
-      console.log(`✅ Webhook created: ${url}`);
+      console.log(`âœ… Webhook created: ${url}`);
       return response.data;
     } catch (error) {
       console.error('Error creating webhook:', error);
@@ -269,7 +449,7 @@ class PrintifyService {
   async deleteWebhook(webhookId) {
     try {
       await this.client.delete(`/webhooks/${webhookId}.json`);
-      console.log(`✅ Webhook deleted: ${webhookId}`);
+      console.log(`âœ… Webhook deleted: ${webhookId}`);
       return true;
     } catch (error) {
       console.error(`Error deleting webhook ${webhookId}:`, error);
