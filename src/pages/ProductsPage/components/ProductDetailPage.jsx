@@ -6,6 +6,8 @@ import { useCart } from '../../../hooks/useCart';
 import SizeFinderModal from './SizeFinderModal';
 import { SIZE_CHART_TSHIRT, findSizeIdByLabel, findBestAvailableSizeId } from '../../../utils/sizing';
 import './ProductDetailPage.css';
+import CheckoutDrawer from '../../CartPage/components/CheckoutDrawer';
+
 
 const ProductDetailPage = () => {
   const { graphicName } = useParams();
@@ -24,6 +26,7 @@ const ProductDetailPage = () => {
 
   // States principali
   const [loading, setLoading] = useState(true);
+  const [showCheckoutDrawer, setShowCheckoutDrawer] = useState(false);
   const [error, setError] = useState(null);
   const [productModels, setProductModels] = useState({}); // {tshirt: {...}, sweatshirt: {...}}
   const [availableTypes, setAvailableTypes] = useState([]); // ['tshirt', 'sweatshirt']
@@ -128,8 +131,8 @@ const ProductDetailPage = () => {
   };
 
   const formatPrice = (price) => {
-    return (price / 100).toFixed(2);
-  };
+  return (price / 100).toFixed(2);
+};
 
   const getCleanTitle = (graphicName) => {
     return normalize(graphicName)
@@ -604,7 +607,7 @@ const ProductDetailPage = () => {
           id: `${graphicName}_${selectedType}`,
           title: getCurrentModel()?.title || `Prodotto ${selectedType}`,
           image: getCurrentImages()[0]?.src,
-          price: { min: selectedVariant.price }
+          price: { min: selectedVariant.price}
         },
         selectedType,
         selectedColor: getSelectedColorName(),
@@ -622,11 +625,6 @@ const ProductDetailPage = () => {
       const itemName = `${selectedType === 'tshirt' ? 'T-Shirt' : 'Felpa'} ${getSelectedColorName()} ${getCurrentModel()?.availableSizes?.find(s => s.id === selectedSizeId)?.title || selectedSizeId}`;
       
       // Mostra notifica di successo (puoi personalizzare)
-      if (window.confirm(`"${itemName}" aggiunta al carrello!\n\nVuoi continuare lo shopping o andare al carrello?`)) {
-        // Utente vuole andare al carrello
-        console.log('Redirect to cart requested');
-        // TODO: Implementare navigazione al carrello
-      }
 
       console.log('Item added to cart successfully');
 
@@ -649,20 +647,25 @@ const ProductDetailPage = () => {
   };
 
   const handleBuyNow = async () => {
-    try {
-      // Prima aggiungi al carrello
-      await handleAddToCart();
-      
-      // Poi reindirizza al checkout
-      console.log('Redirecting to checkout');
-      // TODO: Implementare navigazione al checkout
-      alert('Redirect al checkout (da implementare)');
-      
-    } catch (error) {
-      console.error('Buy now error:', error);
-      alert('Errore durante l\'acquisto immediato');
-    }
-  };
+  try {
+    // Prima aggiungi al carrello
+    await handleAddToCart();
+    
+    // Poi apri il checkout drawer invece di alert
+    console.log('Opening checkout drawer after add to cart');
+    setShowCheckoutDrawer(true);
+    
+  } catch (error) {
+    console.error('Buy now error:', error);
+    alert('Errore durante l\'acquisto immediato');
+  }
+};
+
+// 🔥 AGGIUNGI questo handler per chiudere il drawer:
+const handleCloseCheckout = () => {
+  setShowCheckoutDrawer(false);
+  console.log('Checkout drawer closed from product page');
+};
 
   const handleToggleFavorite = useCallback(() => {
     const productId = `${graphicName}_${selectedType}`;
@@ -681,15 +684,21 @@ const ProductDetailPage = () => {
   };
 
   const getCurrentPrice = () => {
-    if (selectedVariant && selectedVariant.price) {
-      return formatPrice(selectedVariant.price);
-    }
-    const model = getCurrentModel();
-    if (model?.price?.min) {
-      return formatPrice(model.price.min);
-    }
-    return '25.00'; // Fallback
-  };
+  // I prezzi di Printify sono in centesimi, dobbiamo dividere per 100
+  if (selectedVariant && selectedVariant.price) {
+    console.log('Usando prezzo variant:', selectedVariant.price);
+    return (selectedVariant.price / 100).toFixed(2);
+  }
+  
+  const model = getCurrentModel();
+  if (model?.price?.min) {
+    console.log('Usando prezzo model:', model.price.min);
+    return (model.price.min / 100).toFixed(2);
+  }
+  
+  console.log('Usando fallback');
+  return '25.00';
+};
 
   // MODIFICA FUNZIONI STATO BOTTONI
   const isAddToCartDisabled = () => {
@@ -1074,6 +1083,11 @@ const ProductDetailPage = () => {
         selectedColorId={selectedColorId}
         getAvailableSizesForColor={getAvailableSizesForColor}
         findVariant={findVariant}
+      />
+       {/* 🔥 CHECKOUT DRAWER */}
+      <CheckoutDrawer
+        isOpen={showCheckoutDrawer}
+        onClose={handleCloseCheckout}
       />
     </div>
   );

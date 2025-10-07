@@ -109,10 +109,11 @@ const FavoritesPage = () => {
   };
 
   const handleCartClick = () => {
-    if (!redirecting) {
-      console.log('Cart clicked');
-    }
-  };
+  if (!redirecting) {
+    navigate('/cart');
+  }
+};
+
 
   const handleLoaderComplete = () => {
     setShowLoader(false);

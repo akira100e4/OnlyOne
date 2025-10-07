@@ -1,10 +1,11 @@
-// src/pages/CartPage/CartPage.jsx
+// src/pages/CartPage/CartPage.jsx - CON CHECKOUT DRAWER
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Heart, ShoppingCart, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
+import { User, Heart, ShoppingCart, ArrowLeft, Trash2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavoritesContext } from '../../contexts/FavoritesContext';
 import CartGrid from './components/CartGrid';
+import CheckoutDrawer from './components/CheckoutDrawer'; // 🔥 NUOVO IMPORT
 import './CartPage.css';
 
 const CartPage = () => {
@@ -30,6 +31,7 @@ const CartPage = () => {
   // States
   const [isScrolled, setIsScrolled] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [showCheckoutDrawer, setShowCheckoutDrawer] = useState(false); // 🔥 NUOVO STATE
 
   // Scroll detection per header
   useEffect(() => {
@@ -81,20 +83,28 @@ const CartPage = () => {
     }
   };
 
+  // 🔥 MODIFICATO: handleCheckout ora apre il drawer invece dell'alert
   const handleCheckout = () => {
     if (isEmpty) return;
     
-    console.log('Proceeding to checkout with', count, 'items');
-    // TODO: Navigate to checkout page
-    alert('Navigazione al checkout (da implementare)');
+    console.log('Opening checkout drawer for', count, 'items');
+    setShowCheckoutDrawer(true);
+  };
+
+  // 🔥 NUOVO: Handler per chiudere checkout drawer
+  const handleCloseCheckout = () => {
+    setShowCheckoutDrawer(false);
+    console.log('Checkout drawer closed');
   };
 
   // Format price helper
   const formatPrice = (price) => {
+    // I prezzi arrivano in centesimi, convertiamo prima di formattare
+    const priceInEuro = price / 100;
     return new Intl.NumberFormat('it-IT', {
       style: 'currency',
       currency: 'EUR'
-    }).format(price);
+    }).format(priceInEuro);
   };
 
   return (
@@ -317,6 +327,12 @@ const CartPage = () => {
           )}
         </>
       )}
+
+      {/* 🔥 CHECKOUT DRAWER */}
+      <CheckoutDrawer
+        isOpen={showCheckoutDrawer}
+        onClose={handleCloseCheckout}
+      />
 
       {/* Session Debug (development only) */}
       {process.env.NODE_ENV === 'development' && (

@@ -159,7 +159,7 @@ return data;
         
         relatedProducts.forEach(product => {
           if (product.price?.min !== undefined) {
-            allPrices.push(product.price.min / 100); // Converti da centesimi
+            allPrices.push(product.price.min / 100); // Prezzi già in euro 
           }
           if (product.price?.max !== undefined) {
             allPrices.push(product.price.max / 100);

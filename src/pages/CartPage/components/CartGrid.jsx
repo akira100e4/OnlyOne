@@ -11,12 +11,14 @@ const CartGrid = () => {
   const [removingItems, setRemovingItems] = useState(new Set());
 
   // Format price helper
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
+ const formatPrice = (price) => {
+  // Converti da centesimi a euro prima della formattazione
+  const priceInEuro = price / 100;
+  return new Intl.NumberFormat('it-IT', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(priceInEuro);
+};
 
   // Handle remove item with loading state
   const handleRemoveItem = async (item) => {
